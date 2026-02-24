@@ -1,0 +1,42 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user is accessing their own data
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    match /users/{userId} {
+      // Anyone authenticated can read user profiles (for discovery)
+      allow read: if isAuthenticated();
+      // Users can only create/update their own profile
+      allow write: if isAuthenticated() && isOwner(userId);
+    }
+    
+    match /swipes/{swipeId} {
+      // Users can read matches/swipes where they are involved
+      // Users can only create a swipe originating from themselves
+      allow read: if isAuthenticated() && (request.auth.uid == resource.data.fromUserId || request.auth.uid == resource.data.toUserId);
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.fromUserId;
+      allow update, delete: if false; // Swipes are immutable
+    }
+    
+    match /matches/{matchId} {
+      allow read: if isAuthenticated() && (request.auth.uid in resource.data.users);
+      allow write: if false; // Matches should only be created by Cloud Functions
+    }
+    
+    match /listings/{listingId} {
+      // Anyone authenticated can view listings
+      allow read: if isAuthenticated();
+      // Only the host can create/update their listing
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.hostId;
+      allow update, delete: if isAuthenticated() && request.auth.uid == resource.data.hostId;
+    }
+  }
+}

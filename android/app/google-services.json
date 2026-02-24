@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "367238386486",
+    "project_id": "sefirot-ff9af",
+    "storage_bucket": "sefirot-ff9af.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:367238386486:android:0f53472fc27332b9a49997",
+        "android_client_info": {
+          "package_name": "com.example.sefirot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkxyTDb_u4D4jK-4es-UBOxBRKSA07N8o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
