@@ -227,6 +227,7 @@ class _AuthCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Center(
           child: ConstrainedBox(
