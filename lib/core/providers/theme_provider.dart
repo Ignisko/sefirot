@@ -17,6 +17,13 @@ class ThemeNotifier extends Notifier<ThemeMode> {
 
   Future<void> _loadTheme() async {
     final prefs = await SharedPreferences.getInstance();
+    
+    // Force reset for users stuck in dark mode on the login screen
+    if (prefs.getBool('theme_force_reset') != true) {
+      await prefs.setBool(_themeKey, false);
+      await prefs.setBool('theme_force_reset', true);
+    }
+
     final isDark = prefs.getBool(_themeKey);
     if (isDark == true) {
       state = ThemeMode.dark;

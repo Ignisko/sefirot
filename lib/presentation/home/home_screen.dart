@@ -556,27 +556,6 @@ class _ProfileContent extends ConsumerWidget {
             SizedBox(width: 12),
             _StatCard(label: 'Matches', value: '0', emoji: '✨'),
           ]),
-          const SizedBox(height: 24),
-
-          // ── Settings ─────────────────────────────────────────────
-          Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
-            ),
-            child: SwitchListTile(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              title: const Text('Dark Mode', style: TextStyle(fontWeight: FontWeight.w500)),
-              secondary: Icon(
-                  ref.watch(themeProvider) == ThemeMode.dark ? Icons.dark_mode : Icons.light_mode,
-                  color: Theme.of(context).colorScheme.primary),
-              value: ref.watch(themeProvider) == ThemeMode.dark,
-              onChanged: (val) {
-                ref.read(themeProvider.notifier).toggleTheme(val);
-              },
-            ),
-          ),
         ],
       ),
     );
