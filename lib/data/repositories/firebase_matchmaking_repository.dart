@@ -118,6 +118,7 @@ class FirebaseMatchmakingRepository implements MatchmakingRepository {
       'senderUid': senderId,
       'text': text,
       'timestamp': FieldValue.serverTimestamp(),
+      'read': false, // Recipient hasn't read it yet
     });
 
     // 2. Update chat metadata
