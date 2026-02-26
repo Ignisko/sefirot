@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pelegrin | The App for Catholic Pilgrims</title>
+    <meta name="description" content="Connect with pilgrims, navigate events, and deepen your faith journey at WYD Seoul 2027 and beyond.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (via CDN for static hosting) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            red: '#CD2E3A',    // Seoul Red
+                            blue: '#0047A0',   // Seoul Blue
+                            yellow: '#FFD100', // Seoul Yellow
+                            dark: '#0a0a0a',
+                            cream: '#FDFBF7'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #FDFBF7; }
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(0,71,160,0.05) 0%, rgba(205,46,58,0.05) 100%);
+        }
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.4;
+        }
+    </style>
+</head>
+<body class="text-brand-dark antialiased overflow-x-hidden">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-brand-cream/80 backdrop-blur-md border-b border-gray-200/50">
+        <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="flex">
+                    <div class="w-1.5 h-6 bg-brand-red mr-1"></div>
+                    <div class="w-1.5 h-6 bg-brand-blue"></div>
+                </div>
+                <span class="font-display font-bold text-xl tracking-tight">Pelegrin</span>
+            </div>
+            
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
+                <a href="#features" class="hover:text-brand-blue transition-colors">Features</a>
+                <a href="#about" class="hover:text-brand-blue transition-colors">About</a>
+                <a href="#wyd2027" class="hover:text-brand-blue transition-colors">Seoul 2027</a>
+            </div>
+
+            <!-- THE MAGIC BUTTON THAT LINKS TO APP -->
+            <a href="https://app.pelegrin.cloud" 
+               class="bg-brand-blue hover:bg-blue-800 text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-lg shadow-brand-blue/20 hover:shadow-brand-blue/40 transform hover:-translate-y-0.5">
+                Open Web App
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden hero-gradient min-h-screen flex items-center">
+        <!-- Decorative Background Blobs -->
+        <div class="blob bg-brand-blue rounded-full w-[500px] h-[500px] -top-48 -right-20"></div>
+        <div class="blob bg-brand-red rounded-full w-[400px] h-[400px] bottom-0 -left-20"></div>
+
+        <div class="max-w-6xl mx-auto px-6 relative z-10">
+            <div class="max-w-3xl">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-yellow/20 text-yellow-800 text-sm font-semibold mb-6">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-yellow opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-yellow-500"></span>
+                    </span>
+                    Preparing for WYD Seoul 2027
+                </div>
+                
+                <h1 class="font-display text-5xl md:text-7xl font-bold leading-tight mb-6">
+                    Your spiritual journey, <br/>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue to-brand-red">connected.</span>
+                </h1>
+                
+                <p class="text-xl md:text-2xl text-gray-600 mb-10 leading-relaxed max-w-2xl">
+                    Pelegrin is the ultimate companion app for Catholic youth. Connect with fellow pilgrims, find spiritual guidance, and navigate World Youth Day together.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <!-- MAIN CALL TO ACTION -->
+                    <a href="https://app.pelegrin.cloud" 
+                       class="flex items-center justify-center gap-2 bg-brand-dark text-white px-8 py-4 rounded-full font-medium text-lg hover:bg-gray-800 transition-all shadow-xl hover:-translate-y-1">
+                        Start your journey
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </a>
+                    
+                    <a href="#features" class="flex items-center justify-center px-8 py-4 rounded-full font-medium text-lg text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-all">
+                        Learn more
+                    </a>
+                </div>
+                
+                <div class="mt-12 flex items-center gap-4 text-sm text-gray-500 font-medium">
+                    <div class="flex -space-x-3">
+                        <div class="w-10 h-10 rounded-full border-2 border-brand-cream bg-blue-100 flex items-center justify-center text-xl">👨🏼‍🦱</div>
+                        <div class="w-10 h-10 rounded-full border-2 border-brand-cream bg-red-100 flex items-center justify-center text-xl">👩🏽</div>
+                        <div class="w-10 h-10 rounded-full border-2 border-brand-cream bg-yellow-100 flex items-center justify-center text-xl">👨🏻‍🦰</div>
+                    </div>
+                    <p>Join pilgrims from around the world.</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 bg-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="font-display text-4xl font-bold mb-4">Everything you need for the walk.</h2>
+                <p class="text-lg text-gray-600">Designed around the needs of the modern pilgrim, Pelegrin keeps you safe, informed, and spiritually connected.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-brand-cream p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-14 h-14 bg-blue-100 text-brand-blue rounded-2xl flex items-center justify-center text-2xl mb-6">🤝</div>
+                    <h3 class="font-display text-xl font-bold mb-3">Connect Globally</h3>
+                    <p class="text-gray-600 leading-relaxed">Match and chat with other pilgrims from around the world. Filter by nationality, language, or diocese to make meaningful connections.</p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="bg-brand-cream p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-14 h-14 bg-red-100 text-brand-red rounded-2xl flex items-center justify-center text-2xl mb-6">🛡️</div>
+                    <h3 class="font-display text-xl font-bold mb-3">Safe & Verified</h3>
+                    <p class="text-gray-600 leading-relaxed">A trusted community with built-in reporting tools and volunteer moderation. We prioritize the safety of all participants.</p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="bg-brand-cream p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-14 h-14 bg-yellow-100 text-yellow-700 rounded-2xl flex items-center justify-center text-2xl mb-6">📱</div>
+                    <h3 class="font-display text-xl font-bold mb-3">Accessible Anywhere</h3>
+                    <p class="text-gray-600 leading-relaxed">A lightning-fast web experience that works on any device, anywhere in the world. No app store downloads required.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 bg-brand-dark text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 30px 30px;"></div>
+        <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+            <h2 class="font-display text-4xl md:text-5xl font-bold mb-6">Ready to join the community?</h2>
+            <p class="text-xl text-gray-400 mb-10">Sign up in seconds and start connecting with fellow pilgrims today.</p>
+            <a href="https://app.pelegrin.cloud" class="inline-flex items-center justify-center bg-white text-brand-dark px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all shadow-xl hover:scale-105">
+                Launch Web App
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 py-12 border-t border-gray-200 text-center">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex items-center justify-center gap-2 opacity-50 mb-6">
+                <div class="flex">
+                    <div class="w-1 h-4 bg-brand-red mr-0.5"></div>
+                    <div class="w-1 h-4 bg-brand-blue"></div>
+                </div>
+                <span class="font-display font-bold text-lg tracking-tight">Pelegrin</span>
+            </div>
+            <p class="text-sm text-gray-500">
+                Created with faith. Made for World Youth Day Seoul 2027.<br/>
+                © <span id="year"></span> Pelegrin. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
