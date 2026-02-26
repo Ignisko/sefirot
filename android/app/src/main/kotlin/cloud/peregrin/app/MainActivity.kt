@@ -1,4 +1,4 @@
-package com.example.sefirot
+package cloud.peregrin.app
 
 import io.flutter.embedding.android.FlutterActivity
 

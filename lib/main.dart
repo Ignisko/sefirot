@@ -5,9 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'firebase_options.dart';
 
-import 'presentation/auth/login_screen.dart';
-import 'presentation/home/home_screen.dart';
-import 'core/providers/auth_provider.dart';
+import 'core/router/app_router.dart';
+import 'core/providers/theme_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +16,22 @@ void main() async {
        options: DefaultFirebaseOptions.currentPlatform,
      );
   } catch (e) {
-    debugPrint("Firebase initialization failed/skipped: $e");
+    debugPrint("Firebase initialization failed: $e");
+    // Show a rudimentary error screen if Firebase fails entirely.
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Text(
+              'Failed to initialize app core.\nPlease restart the app.',
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.red, fontSize: 16),
+            ),
+          ),
+        ),
+      ),
+    );
+    return;
   }
 
   runApp(
@@ -32,34 +46,44 @@ class SefirotApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authStateChangesProvider);
+    final router = ref.watch(routerProvider);
 
-    return MaterialApp(
-      title: 'Sefirot',
+    return MaterialApp.router(
+      title: 'Pelegrin',
+      routerConfig: router,
+      scrollBehavior: const MaterialScrollBehavior().copyWith(
+        physics: const BouncingScrollPhysics(),
+      ),
+      themeMode: ref.watch(themeProvider),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFE30022), // WYD Seoul Red
-          primary: const Color(0xFFE30022),
-          secondary: const Color(0xFF003478), // WYD Seoul Blue
-          tertiary: const Color(0xFFF1A000), // WYD Seoul Yellow
+          seedColor: const Color(0xFFCD2E3A), // WYD Seoul Red
+          primary: const Color(0xFFCD2E3A),
+          secondary: const Color(0xFF0047A0), // WYD Seoul Blue
+          tertiary: const Color(0xFFFFD100), // WYD Seoul Yellow
+          surface: const Color(0xFFFDFBF7), // Light Cream background
+          onSurface: const Color(0xFF0A0A0A), // Dark text
           brightness: Brightness.light,
         ),
+        scaffoldBackgroundColor: const Color(0xFFFDFBF7),
+        cardColor: const Color(0xFFFFFFFF),
+        useMaterial3: true,
+        textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme),
+      ),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFFCD2E3A),
+          primary: const Color(0xFFCD2E3A),
+          secondary: const Color(0xFF0047A0), 
+          tertiary: const Color(0xFFFFD100),
+          surface: const Color(0xFF121212), // Dark background
+          onSurface: const Color(0xFFF0F0F0), // Light text
+          brightness: Brightness.dark,
+        ),
+        scaffoldBackgroundColor: const Color(0xFF121212),
+        cardColor: const Color(0xFF1E1E1E),
         useMaterial3: true,
         textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
-      ),
-      home: authState.when(
-        data: (user) {
-          if (user != null) {
-            return const HomeScreen();
-          }
-          return const LoginScreen();
-        },
-        loading: () => const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
-        ),
-        error: (error, _) => Scaffold(
-          body: Center(child: Text("Auth Error: $error")),
-        ),
       ),
     );
   }

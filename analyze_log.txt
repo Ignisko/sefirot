@@ -1,0 +1,50 @@
+Analyzing sefirot...                                            
+
+warning - Unused import: 'dart:io' - decode.dart:2:8 - unused_import
+   info - Don't invoke 'print' in production code - decode.dart:19:3 - avoid_print
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\admin\admin_dashboard.dart:168:40 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\admin\admin_dashboard.dart:175:128 - deprecated_member_use
+warning - Unused import: '../../core/providers/user_provider.dart' - lib\presentation\admin\user_actions_helper.dart:6:8 - unused_import
+   info - 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre - lib\presentation\admin\user_actions_helper.dart:120:21 - deprecated_member_use
+   info - 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre - lib\presentation\admin\user_actions_helper.dart:121:21 - deprecated_member_use
+warning - The declaration '_bg' isn't referenced - lib\presentation\auth\login_screen.dart:11:7 - unused_element
+  error - Undefined name 'authRepositoryProvider' - lib\presentation\auth\login_screen.dart:67:22 - undefined_identifier
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\auth\login_screen.dart:114:31 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\auth\login_screen.dart:239:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\auth\login_screen.dart:260:49 - deprecated_member_use
+  error - Undefined name '_googleBlue' - lib\presentation\auth\login_screen.dart:317:48 - undefined_identifier
+  error - Invalid constant value - lib\presentation\auth\login_screen.dart:339:50 - invalid_constant
+  error - Undefined name '_googleBlue' - lib\presentation\auth\login_screen.dart:339:50 - undefined_identifier
+warning - A value for optional parameter 'dark' isn't ever given - lib\presentation\auth\login_screen.dart:543:25 - unused_element_parameter
+warning - Unused import: '../../core/providers/user_provider.dart' - lib\presentation\browse\browse_screen.dart:7:8 - unused_import
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:197:30 - deprecated_member_use
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\presentation\browse\browse_screen.dart:378:7 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:539:44 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:637:42 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:736:26 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:747:35 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:770:22 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:772:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:934:42 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:1027:30 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:1097:40 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:1144:40 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:1146:59 - deprecated_member_use
+   info - Unnecessary use of multiple underscores - lib\presentation\chat\chat_list_screen.dart:85:35 - unnecessary_underscores
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\chat\chat_list_screen.dart:163:42 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\chat\chat_screen.dart:176:36 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\chat\chat_screen.dart:376:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\chat\chat_screen.dart:398:38 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\chat\chat_screen.dart:406:40 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\chat\chat_screen.dart:407:40 - deprecated_member_use
+warning - Unused import: '../../domain/models/user_model.dart' - lib\presentation\home\dashboard_screen.dart:7:8 - unused_import
+warning - Unused import: '../browse/browse_screen.dart' - lib\presentation\home\dashboard_screen.dart:8:8 - unused_import
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\home\dashboard_screen.dart:415:20 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\home\dashboard_screen.dart:435:46 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\home\dashboard_screen.dart:494:48 - deprecated_member_use
+warning - Unused import: 'dart:math' - lib\presentation\home\home_screen.dart:1:8 - unused_import
+warning - A value for optional parameter 'icon' isn't ever given - lib\presentation\home\home_screen.dart:353:10 - unused_element_parameter
+warning - A value for optional parameter 'badge' isn't ever given - lib\presentation\home\home_screen.dart:357:10 - unused_element_parameter
+warning - A value for optional parameter 'destructive' isn't ever given - lib\presentation\home\home_screen.dart:358:10 - unused_element_parameter
+   info - Unnecessary use of multiple underscores - lib\presentation\onboarding\onboarding_screen.dart:483:37 - unnecessary_underscores
+

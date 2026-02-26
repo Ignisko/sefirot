@@ -1,0 +1,100 @@
+Analyzing sefirot...                                            
+
+warning - Unused import: 'dart:io' - decode.dart:2:8 - unused_import
+   info - Don't invoke 'print' in production code - decode.dart:19:3 - avoid_print
+warning - Unused import: 'presentation/auth/verify_email_screen.dart' - lib\main.dart:8:8 - unused_import
+warning - Unused import: 'presentation/auth/login_screen.dart' - lib\main.dart:9:8 - unused_import
+warning - Unused import: 'presentation/home/home_screen.dart' - lib\main.dart:10:8 - unused_import
+warning - Unused import: 'presentation/onboarding/onboarding_screen.dart' - lib\main.dart:11:8 - unused_import
+warning - Unused import: 'core/providers/user_provider.dart' - lib\main.dart:12:8 - unused_import
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\admin\admin_dashboard.dart:168:73 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\admin\admin_dashboard.dart:175:155 - deprecated_member_use
+warning - Unused import: '../../core/providers/user_provider.dart' - lib\presentation\admin\user_actions_helper.dart:6:8 - unused_import
+   info - 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre - lib\presentation\admin\user_actions_helper.dart:117:21 - deprecated_member_use
+   info - 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre - lib\presentation\admin\user_actions_helper.dart:118:21 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\auth\login_screen.dart:116:64 - deprecated_member_use
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:180:32 - const_eval_method_invocation
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\auth\login_screen.dart:240:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\auth\login_screen.dart:261:49 - deprecated_member_use
+  error - Undefined name '_googleBlue' - lib\presentation\auth\login_screen.dart:318:48 - undefined_identifier
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:335:46 - const_eval_method_invocation
+  error - Invalid constant value - lib\presentation\auth\login_screen.dart:340:50 - invalid_constant
+  error - Undefined name '_googleBlue' - lib\presentation\auth\login_screen.dart:340:50 - undefined_identifier
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:348:48 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:430:48 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:441:50 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:472:58 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:483:58 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:524:20 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:535:43 - const_eval_method_invocation
+warning - A value for optional parameter 'dark' isn't ever given - lib\presentation\auth\login_screen.dart:545:25 - unused_element_parameter
+warning - Unused import: '../../core/providers/user_provider.dart' - lib\presentation\browse\browse_screen.dart:7:8 - unused_import
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:197:64 - deprecated_member_use
+  error - Methods can't be invoked in constant expressions - lib\presentation\browse\browse_screen.dart:317:34 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\browse\browse_screen.dart:335:44 - const_eval_method_invocation
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\presentation\browse\browse_screen.dart:378:7 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:539:44 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:637:42 - deprecated_member_use
+  error - Methods can't be invoked in constant expressions - lib\presentation\browse\browse_screen.dart:714:24 - const_eval_method_invocation
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:736:60 - deprecated_member_use
+  error - Methods can't be invoked in constant expressions - lib\presentation\browse\browse_screen.dart:741:40 - const_eval_method_invocation
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:747:35 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:770:22 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:772:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:934:76 - deprecated_member_use
+  error - Methods can't be invoked in constant expressions - lib\presentation\browse\browse_screen.dart:939:34 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\browse\browse_screen.dart:994:38 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\browse\browse_screen.dart:997:38 - const_eval_method_invocation
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:1027:30 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:1097:40 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:1144:74 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:1146:93 - deprecated_member_use
+  error - Methods can't be invoked in constant expressions - lib\presentation\browse\browse_screen.dart:1150:40 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\browse\browse_screen.dart:1176:54 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\browse\browse_screen.dart:1199:30 - const_eval_method_invocation
+   info - Unnecessary use of multiple underscores - lib\presentation\chat\chat_list_screen.dart:93:35 - unnecessary_underscores
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\presentation\chat\chat_list_screen.dart:109:35 - use_build_context_synchronously
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\chat\chat_list_screen.dart:184:42 - deprecated_member_use
+  error - Methods can't be invoked in constant expressions - lib\presentation\chat\chat_list_screen.dart:207:38 - const_eval_method_invocation
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\chat\chat_screen.dart:176:36 - deprecated_member_use
+  error - Methods can't be invoked in constant expressions - lib\presentation\chat\chat_screen.dart:322:38 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\chat\chat_screen.dart:326:40 - const_eval_method_invocation
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\chat\chat_screen.dart:376:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\chat\chat_screen.dart:398:59 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\chat\chat_screen.dart:406:61 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\chat\chat_screen.dart:407:61 - deprecated_member_use
+warning - Unused import: '../../domain/models/user_model.dart' - lib\presentation\home\dashboard_screen.dart:7:8 - unused_import
+warning - Unused import: '../browse/browse_screen.dart' - lib\presentation\home\dashboard_screen.dart:8:8 - unused_import
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\dashboard_screen.dart:178:67 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\dashboard_screen.dart:199:45 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\dashboard_screen.dart:252:34 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\dashboard_screen.dart:279:38 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\dashboard_screen.dart:301:39 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\dashboard_screen.dart:341:39 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\dashboard_screen.dart:385:42 - const_eval_method_invocation
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\home\dashboard_screen.dart:413:54 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\home\dashboard_screen.dart:433:79 - deprecated_member_use
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\dashboard_screen.dart:436:63 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\dashboard_screen.dart:472:24 - const_eval_method_invocation
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\home\dashboard_screen.dart:492:48 - deprecated_member_use
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:212:34 - const_eval_method_invocation
+warning - A value for optional parameter 'icon' isn't ever given - lib\presentation\home\home_screen.dart:309:10 - unused_element_parameter
+warning - A value for optional parameter 'badge' isn't ever given - lib\presentation\home\home_screen.dart:313:10 - unused_element_parameter
+warning - A value for optional parameter 'destructive' isn't ever given - lib\presentation\home\home_screen.dart:314:10 - unused_element_parameter
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:394:38 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:431:24 - const_eval_method_invocation
+  error - Undefined name 'context' - lib\presentation\home\home_screen.dart:591:33 - undefined_identifier
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:656:32 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:664:26 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:671:36 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:675:38 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:713:55 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:757:32 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:817:28 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:979:38 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:1084:34 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:1087:34 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\onboarding\onboarding_screen.dart:411:34 - const_eval_method_invocation
+   info - Unnecessary use of multiple underscores - lib\presentation\onboarding\onboarding_screen.dart:474:37 - unnecessary_underscores
+  error - Methods can't be invoked in constant expressions - lib\presentation\onboarding\onboarding_screen.dart:513:40 - const_eval_method_invocation
+

@@ -23,10 +23,10 @@ class AuthController extends AsyncNotifier<void> {
     state = await AsyncValue.guard(() => _authRepository.signInWithGoogle());
   }
 
-  Future<void> signUpWithEmail(String email, String password) async {
+  Future<void> signUpWithEmail(String email, String password, {String displayName = ''}) async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => 
-      _authRepository.createUserWithEmailAndPassword(email: email, password: password)
+    state = await AsyncValue.guard(() =>
+      _authRepository.createUserWithEmailAndPassword(email: email, password: password, displayName: displayName)
     );
   }
 }

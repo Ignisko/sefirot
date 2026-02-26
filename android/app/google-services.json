@@ -7,12 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:367238386486:android:0f53472fc27332b9a49997",
+        "mobilesdk_app_id": "1:367238386486:android:3dbbaf28411d701ba49997",
         "android_client_info": {
-          "package_name": "com.example.sefirot"
+          "package_name": "cloud.peregrin.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "367238386486-75cq2ce7kplg8jqliklcne44hqsv0ani.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCkxyTDb_u4D4jK-4es-UBOxBRKSA07N8o"
@@ -20,7 +25,55 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "367238386486-75cq2ce7kplg8jqliklcne44hqsv0ani.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "367238386486-mq85m1j4d5jefvsln3dm2kof0g6ficfb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.sefirot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:367238386486:android:0f53472fc27332b9a49997",
+        "android_client_info": {
+          "package_name": "com.example.sefirot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "367238386486-75cq2ce7kplg8jqliklcne44hqsv0ani.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkxyTDb_u4D4jK-4es-UBOxBRKSA07N8o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "367238386486-75cq2ce7kplg8jqliklcne44hqsv0ani.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "367238386486-mq85m1j4d5jefvsln3dm2kof0g6ficfb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.sefirot"
+              }
+            }
+          ]
         }
       }
     }

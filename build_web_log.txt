@@ -1,0 +1,376 @@
+[ +295 ms] Artifact Instance of 'MaterialFonts' is not required, skipping update.
+[   +1 ms] Artifact Instance of 'GradleWrapper' is not required, skipping update.
+[        ] Artifact Instance of 'AndroidGenSnapshotArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'AndroidInternalBuildArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IOSEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterWebSdk' is not required, skipping update.
+[   +1 ms] Artifact Instance of 'LegacyCanvasKitRemover' is not required, skipping update.
+[   +5 ms] Artifact Instance of 'FlutterSdk' is not required, skipping update.
+[        ] Artifact Instance of 'WindowsEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'MacOSEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'LinuxEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'LinuxFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'MacOSFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterRunnerSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterRunnerDebugSymbols' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FontSubsetArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'PubDependencies' is not required, skipping update.
+[        ] executing: [C:\dev\flutter/] git -c log.showSignature=false log HEAD -n 1 --pretty=format:%ad --date=iso
+[  +70 ms] Exit code 0 from: git -c log.showSignature=false log HEAD -n 1 --pretty=format:%ad --date=iso
+[        ] 2026-01-28 13:43:12 -0800
+[  +11 ms] Artifact Instance of 'AndroidGenSnapshotArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'AndroidInternalBuildArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IOSEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterWebSdk' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterEngineStamp' is not required, skipping update.
+[        ] Artifact Instance of 'LegacyCanvasKitRemover' is not required, skipping update.
+[   +2 ms] Artifact Instance of 'WindowsEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'MacOSEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'LinuxEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'LinuxFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'MacOSFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterRunnerSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterRunnerDebugSymbols' is not required, skipping update.
+[  +66 ms] Artifact Instance of 'MaterialFonts' is not required, skipping update.
+[        ] Artifact Instance of 'GradleWrapper' is not required, skipping update.
+[        ] Artifact Instance of 'AndroidGenSnapshotArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'AndroidInternalBuildArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IOSEngineArtifacts' is not required, skipping update.
+[   +1 ms] Artifact Instance of 'FlutterEngineStamp' is not required, skipping update.
+[   +2 ms] Artifact Instance of 'FlutterSdk' is not required, skipping update.
+[        ] Artifact Instance of 'WindowsEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'MacOSEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'LinuxEngineArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'LinuxFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'MacOSFuchsiaSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterRunnerSDKArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FlutterRunnerDebugSymbols' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'FontSubsetArtifacts' is not required, skipping update.
+[        ] Artifact Instance of 'PubDependencies' is not required, skipping update.
+[  +19 ms] Skipping pub get: version match.
+[ +127 ms] Found plugin image_picker at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker-1.2.1\
+[   +5 ms] Found plugin image_picker_windows at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_windows-0.2.2\
+[  +12 ms] Found plugin file_selector_windows at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\file_selector_windows-0.9.3+5\
+[   +5 ms] Found plugin image_picker_macos at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_macos-0.2.2+1\
+[   +2 ms] Found plugin file_selector_macos at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\file_selector_macos-0.9.5\
+[   +3 ms] Found plugin image_picker_linux at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_linux-0.2.2\
+[   +3 ms] Found plugin file_selector_linux at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\file_selector_linux-0.9.4\
+[   +2 ms] Found plugin image_picker_ios at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_ios-0.8.13+6\
+[   +3 ms] Found plugin image_picker_for_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_for_web-3.1.1\
+[   +5 ms] Found plugin image_picker_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_android-0.8.13+14\
+[   +2 ms] Found plugin flutter_plugin_android_lifecycle at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_plugin_android_lifecycle-2.0.33\
+[   +3 ms] Found plugin google_sign_in at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in-6.3.0\
+[   +6 ms] Found plugin google_sign_in_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in_web-0.12.4+4\
+[   +5 ms] Found plugin google_sign_in_ios at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in_ios-5.9.0\
+[   +4 ms] Found plugin google_sign_in_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in_android-6.2.1\
+[   +3 ms] Found plugin google_maps_flutter at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter-2.14.2\
+[   +3 ms] Found plugin google_maps_flutter_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter_web-0.5.14+3\
+[  +15 ms] Found plugin google_maps_flutter_ios at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter_ios-2.17.5\
+[   +2 ms] Found plugin google_maps_flutter_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter_android-2.19.1\
+[   +4 ms] Found plugin path_provider at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider-2.1.5\
+[   +2 ms] Found plugin path_provider_windows at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_windows-2.3.0\
+[   +4 ms] Found plugin path_provider_linux at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_linux-2.2.1\
+[   +4 ms] Found plugin path_provider_foundation at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_foundation-2.6.0\
+[  +15 ms] Found plugin path_provider_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_android-2.2.22\
+[  +30 ms] Found plugin firebase_storage at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_storage-13.0.6\
+[   +1 ms] Found plugin firebase_storage_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_storage_web-3.11.2\
+[   +2 ms] Found plugin firebase_core at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_core-4.4.0\
+[   +1 ms] Found plugin firebase_core_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_core_web-3.4.0\
+[   +3 ms] Found plugin firebase_auth at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_auth-6.1.4\
+[   +1 ms] Found plugin firebase_auth_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_auth_web-6.1.2\
+[   +4 ms] Found plugin cloud_firestore at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\cloud_firestore-6.1.2\
+[   +1 ms] Found plugin cloud_firestore_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\cloud_firestore_web-5.1.2\
+[  +83 ms] Found plugin image_picker at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker-1.2.1\
+[   +1 ms] Found plugin image_picker_windows at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_windows-0.2.2\
+[   +9 ms] Found plugin file_selector_windows at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\file_selector_windows-0.9.3+5\
+[   +3 ms] Found plugin image_picker_macos at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_macos-0.2.2+1\
+[   +2 ms] Found plugin file_selector_macos at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\file_selector_macos-0.9.5\
+[   +2 ms] Found plugin image_picker_linux at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_linux-0.2.2\
+[   +1 ms] Found plugin file_selector_linux at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\file_selector_linux-0.9.4\
+[   +1 ms] Found plugin image_picker_ios at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_ios-0.8.13+6\
+[   +1 ms] Found plugin image_picker_for_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_for_web-3.1.1\
+[   +4 ms] Found plugin image_picker_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_android-0.8.13+14\
+[   +1 ms] Found plugin flutter_plugin_android_lifecycle at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_plugin_android_lifecycle-2.0.33\
+[   +1 ms] Found plugin google_sign_in at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in-6.3.0\
+[   +1 ms] Found plugin google_sign_in_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in_web-0.12.4+4\
+[   +3 ms] Found plugin google_sign_in_ios at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in_ios-5.9.0\
+[   +1 ms] Found plugin google_sign_in_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in_android-6.2.1\
+[   +1 ms] Found plugin google_maps_flutter at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter-2.14.2\
+[   +1 ms] Found plugin google_maps_flutter_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter_web-0.5.14+3\
+[   +8 ms] Found plugin google_maps_flutter_ios at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter_ios-2.17.5\
+[   +1 ms] Found plugin google_maps_flutter_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter_android-2.19.1\
+[   +2 ms] Found plugin path_provider at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider-2.1.5\
+[   +1 ms] Found plugin path_provider_windows at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_windows-2.3.0\
+[   +3 ms] Found plugin path_provider_linux at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_linux-2.2.1\
+[   +2 ms] Found plugin path_provider_foundation at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_foundation-2.6.0\
+[   +7 ms] Found plugin path_provider_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_android-2.2.22\
+[  +27 ms] Found plugin firebase_storage at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_storage-13.0.6\
+[   +1 ms] Found plugin firebase_storage_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_storage_web-3.11.2\
+[   +1 ms] Found plugin firebase_core at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_core-4.4.0\
+[   +1 ms] Found plugin firebase_core_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_core_web-3.4.0\
+[   +2 ms] Found plugin firebase_auth at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_auth-6.1.4\
+[        ] Found plugin firebase_auth_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_auth_web-6.1.2\
+[   +2 ms] Found plugin cloud_firestore at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\cloud_firestore-6.1.2\
+[   +1 ms] Found plugin cloud_firestore_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\cloud_firestore_web-5.1.2\
+[  +11 ms] Skipping generating web_plugin_registrant.dart because it is up-to-date.
+[  +37 ms] Found plugin image_picker at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker-1.2.1\
+[   +1 ms] Found plugin image_picker_windows at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_windows-0.2.2\
+[   +9 ms] Found plugin file_selector_windows at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\file_selector_windows-0.9.3+5\
+[   +2 ms] Found plugin image_picker_macos at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_macos-0.2.2+1\
+[   +1 ms] Found plugin file_selector_macos at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\file_selector_macos-0.9.5\
+[        ] Found plugin image_picker_linux at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_linux-0.2.2\
+[        ] Found plugin file_selector_linux at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\file_selector_linux-0.9.4\
+[        ] Found plugin image_picker_ios at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_ios-0.8.13+6\
+[        ] Found plugin image_picker_for_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_for_web-3.1.1\
+[   +3 ms] Found plugin image_picker_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_android-0.8.13+14\
+[   +1 ms] Found plugin flutter_plugin_android_lifecycle at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_plugin_android_lifecycle-2.0.33\
+[   +1 ms] Found plugin google_sign_in at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in-6.3.0\
+[   +1 ms] Found plugin google_sign_in_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in_web-0.12.4+4\
+[   +2 ms] Found plugin google_sign_in_ios at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in_ios-5.9.0\
+[   +1 ms] Found plugin google_sign_in_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in_android-6.2.1\
+[   +1 ms] Found plugin google_maps_flutter at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter-2.14.2\
+[   +1 ms] Found plugin google_maps_flutter_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter_web-0.5.14+3\
+[   +7 ms] Found plugin google_maps_flutter_ios at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter_ios-2.17.5\
+[   +1 ms] Found plugin google_maps_flutter_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter_android-2.19.1\
+[   +1 ms] Found plugin path_provider at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider-2.1.5\
+[   +1 ms] Found plugin path_provider_windows at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_windows-2.3.0\
+[   +2 ms] Found plugin path_provider_linux at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_linux-2.2.1\
+[   +1 ms] Found plugin path_provider_foundation at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_foundation-2.6.0\
+[  +11 ms] Found plugin path_provider_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_android-2.2.22\
+[  +21 ms] Found plugin firebase_storage at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_storage-13.0.6\
+[   +1 ms] Found plugin firebase_storage_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_storage_web-3.11.2\
+[   +1 ms] Found plugin firebase_core at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_core-4.4.0\
+[        ] Found plugin firebase_core_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_core_web-3.4.0\
+[   +2 ms] Found plugin firebase_auth at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_auth-6.1.4\
+[   +1 ms] Found plugin firebase_auth_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_auth_web-6.1.2\
+[   +2 ms] Found plugin cloud_firestore at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\cloud_firestore-6.1.2\
+[   +1 ms] Found plugin cloud_firestore_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\cloud_firestore_web-5.1.2\
+[   +5 ms] Generating C:\Users\ignac\Documents\github projects\Eitzy\sefirot\android\app\src\main\java\io\flutter\plugins\GeneratedPluginRegistrant.java
+[   +1 ms] Skipping generating GeneratedPluginRegistrant.java because it is up-to-date.
+[   +2 ms] Skipping generating GeneratedPluginRegistrant.h because it is up-to-date.
+[   +1 ms] Skipping generating GeneratedPluginRegistrant.m because it is up-to-date.
+[ +163 ms] Found plugin image_picker at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker-1.2.1\
+[   +9 ms] Found plugin image_picker_windows at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_windows-0.2.2\
+[   +6 ms] Found plugin file_selector_windows at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\file_selector_windows-0.9.3+5\
+[   +2 ms] Found plugin image_picker_macos at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_macos-0.2.2+1\
+[   +1 ms] Found plugin file_selector_macos at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\file_selector_macos-0.9.5\
+[   +1 ms] Found plugin image_picker_linux at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_linux-0.2.2\
+[   +2 ms] Found plugin file_selector_linux at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\file_selector_linux-0.9.4\
+[   +1 ms] Found plugin image_picker_ios at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_ios-0.8.13+6\
+[   +1 ms] Found plugin image_picker_for_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_for_web-3.1.1\
+[   +3 ms] Found plugin image_picker_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_android-0.8.13+14\
+[   +1 ms] Found plugin flutter_plugin_android_lifecycle at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_plugin_android_lifecycle-2.0.33\
+[   +3 ms] Found plugin google_sign_in at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in-6.3.0\
+[   +2 ms] Found plugin google_sign_in_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in_web-0.12.4+4\
+[   +7 ms] Found plugin google_sign_in_ios at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in_ios-5.9.0\
+[   +1 ms] Found plugin google_sign_in_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in_android-6.2.1\
+[   +1 ms] Found plugin google_maps_flutter at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter-2.14.2\
+[   +1 ms] Found plugin google_maps_flutter_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter_web-0.5.14+3\
+[   +8 ms] Found plugin google_maps_flutter_ios at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter_ios-2.17.5\
+[   +1 ms] Found plugin google_maps_flutter_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter_android-2.19.1\
+[   +3 ms] Found plugin path_provider at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider-2.1.5\
+[   +1 ms] Found plugin path_provider_windows at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_windows-2.3.0\
+[   +2 ms] Found plugin path_provider_linux at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_linux-2.2.1\
+[   +1 ms] Found plugin path_provider_foundation at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_foundation-2.6.0\
+[  +12 ms] Found plugin path_provider_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_android-2.2.22\
+[  +29 ms] Found plugin firebase_storage at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_storage-13.0.6\
+[   +1 ms] Found plugin firebase_storage_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_storage_web-3.11.2\
+[   +2 ms] Found plugin firebase_core at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_core-4.4.0\
+[   +1 ms] Found plugin firebase_core_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_core_web-3.4.0\
+[   +3 ms] Found plugin firebase_auth at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_auth-6.1.4\
+[   +1 ms] Found plugin firebase_auth_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_auth_web-6.1.2\
+[   +3 ms] Found plugin cloud_firestore at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\cloud_firestore-6.1.2\
+[   +1 ms] Found plugin cloud_firestore_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\cloud_firestore_web-5.1.2\
+[   +2 ms] generated_plugin_registrant.dart not found. Skipping.
+[   +1 ms] Compiling lib\main.dart for the Web...
+[   +5 ms] Initializing file store
+[  +32 ms] invalidated build due to missing files: C:\Users\ignac\Documents\github projects\Eitzy\sefirot\web\*\index.html, C:\Users\ignac\Documents\github projects\Eitzy\sefirot\web\flutter_bootstrap.js
+[   +1 ms] web_entrypoint: Starting due to {InvalidatedReasonKind.outputSetAddition: The following outputs were added to the output set: C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\main.dart, InvalidatedReasonKind.inputChanged: The following inputs have updated contents: C:\dev\flutter\packages\flutter_tools\lib\src\build_system\targets\web.dart}
+[   +2 ms] Skipping target: gen_localizations
+[   +2 ms] web_templated_files: Starting due to {InvalidatedReasonKind.buildKeyChanged: The target build key changed., InvalidatedReasonKind.outputSetAddition: The following outputs were added to the output set: C:\Users\ignac\Documents\github projects\Eitzy\sefirot\build\web\*\index.html,C:\Users\ignac\Documents\github projects\Eitzy\sefirot\build\web\flutter_bootstrap.js, InvalidatedReasonKind.inputMissing: The following inputs were missing: C:\Users\ignac\Documents\github projects\Eitzy\sefirot\web\*\index.html,C:\Users\ignac\Documents\github projects\Eitzy\sefirot\web\flutter_bootstrap.js, InvalidatedReasonKind.inputChanged: The following inputs have updated contents: C:\dev\flutter\bin\cache\engine.stamp}
+[   +1 ms] dart_build: Starting due to {}
+[   +1 ms] web_static_assets: Starting due to {InvalidatedReasonKind.inputChanged: The following inputs have updated contents: C:\dev\flutter\bin\cache\engine.stamp, InvalidatedReasonKind.outputSetAddition: The following outputs were added to the output set: C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\flutter.js,C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\canvaskit\canvaskit.js,C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\canvaskit\canvaskit.js.symbols,C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\canvaskit\canvaskit.wasm,C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\canvaskit\chromium\canvaskit.js,C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\canvaskit\chromium\canvaskit.js.symbols,C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\canvaskit\chromium\canvaskit.wasm,C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\canvaskit\skwasm.js,C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\canvaskit\skwasm.js.symbols,C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\canvaskit\skwasm.wasm,C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\canvaskit\skwasm_heavy.js,C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\canvaskit\skwasm_heavy.js.symbols,C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\canvaskit\skwasm_heavy.wasm}
+[  +84 ms] web_static_assets: Complete
+[  +68 ms] web_templated_files: Complete
+[  +68 ms] Building native assets for web.
+[  +25 ms] Found plugin image_picker at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker-1.2.1\
+[   +1 ms] Found plugin image_picker_windows at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_windows-0.2.2\
+[  +22 ms] Running `C:\dev\flutter\bin\cache\dart-sdk\bin\dart compile kernel '--packages=C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\package_config.json' '--output=C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\hooks_runner\objective_c\6782ff62a082d25dd9788598e67912e5\hook.dill' '--depfile=C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\hooks_runner\objective_c\6782ff62a082d25dd9788598e67912e5\hook.dill.d' C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\objective_c-9.3.0\hook\build.dart`.
+[  +25 ms] Found plugin file_selector_windows at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\file_selector_windows-0.9.3+5\
+[   +4 ms] Found plugin image_picker_macos at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_macos-0.2.2+1\
+[   +1 ms] Found plugin file_selector_macos at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\file_selector_macos-0.9.5\
+[   +1 ms] Found plugin image_picker_linux at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_linux-0.2.2\
+[   +1 ms] Found plugin file_selector_linux at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\file_selector_linux-0.9.4\
+[   +1 ms] Found plugin image_picker_ios at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_ios-0.8.13+6\
+[   +1 ms] Found plugin image_picker_for_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_for_web-3.1.1\
+[   +7 ms] Found plugin image_picker_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\image_picker_android-0.8.13+14\
+[   +1 ms] Found plugin flutter_plugin_android_lifecycle at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_plugin_android_lifecycle-2.0.33\
+[   +1 ms] Found plugin google_sign_in at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in-6.3.0\
+[   +1 ms] Found plugin google_sign_in_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in_web-0.12.4+4\
+[   +3 ms] Found plugin google_sign_in_ios at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in_ios-5.9.0\
+[   +1 ms] Found plugin google_sign_in_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_sign_in_android-6.2.1\
+[   +2 ms] Found plugin google_maps_flutter at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter-2.14.2\
+[   +2 ms] Found plugin google_maps_flutter_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter_web-0.5.14+3\
+[   +6 ms] Found plugin google_maps_flutter_ios at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter_ios-2.17.5\
+[   +1 ms] Found plugin google_maps_flutter_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\google_maps_flutter_android-2.19.1\
+[   +3 ms] Found plugin path_provider at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider-2.1.5\
+[   +1 ms] Found plugin path_provider_windows at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_windows-2.3.0\
+[   +4 ms] Found plugin path_provider_linux at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_linux-2.2.1\
+[   +2 ms] Found plugin path_provider_foundation at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_foundation-2.6.0\
+[  +16 ms] Found plugin path_provider_android at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\path_provider_android-2.2.22\
+[  +35 ms] Found plugin firebase_storage at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_storage-13.0.6\
+[   +1 ms] Found plugin firebase_storage_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_storage_web-3.11.2\
+[   +2 ms] Found plugin firebase_core at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_core-4.4.0\
+[   +1 ms] Found plugin firebase_core_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_core_web-3.4.0\
+[   +4 ms] Found plugin firebase_auth at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_auth-6.1.4\
+[   +2 ms] Found plugin firebase_auth_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\firebase_auth_web-6.1.2\
+[   +3 ms] Found plugin cloud_firestore at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\cloud_firestore-6.1.2\
+[   +1 ms] Found plugin cloud_firestore_web at C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\cloud_firestore_web-5.1.2\
+[   +5 ms] web_entrypoint: Complete
+[  +22 ms] dart2js: Starting due to {}
+[  +10 ms] executing: C:\dev\flutter\bin\cache\dart-sdk\bin\dart.exe compile js --platform-binaries=C:\dev\flutter\bin\cache\flutter_web_sdk\kernel --invoker=flutter_tool -Ddart.vm.product=true -DFLUTTER_VERSION=3.38.9 -DFLUTTER_CHANNEL=stable -DFLUTTER_GIT_URL=https://github.com/flutter/flutter.git -DFLUTTER_FRAMEWORK_REVISION=67323de285 -DFLUTTER_ENGINE_REVISION=587c18f873 -DFLUTTER_DART_VERSION=3.10.8 -DFLUTTER_WEB_USE_SKIA=true -DFLUTTER_WEB_USE_SKWASM=false -DFLUTTER_WEB_CANVASKIT_URL=https://www.gstatic.com/flutter-canvaskit/587c18f873b8ab57330422bce09047420d9c7f42/ --native-null-assertions --no-source-maps -O4 --minify -o C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\app.dill --packages=C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\package_config.json --cfe-only C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\main.dart
+[   +1 ms] dart2wasm: Starting due to {}
+[   +2 ms] executing: C:\dev\flutter\bin\cache\dart-sdk\bin\dart.exe compile wasm --packages=C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\package_config.json --extra-compiler-option=--platform=C:\dev\flutter\bin\cache\flutter_web_sdk\kernel\dart2wasm_platform.dill -Ddart.vm.profile=false -Ddart.vm.product=true --extra-compiler-option=--delete-tostring-package-uri=dart:ui --extra-compiler-option=--delete-tostring-package-uri=package:flutter --extra-compiler-option=--import-shared-memory --extra-compiler-option=--shared-memory-max-pages=32768 -DFLUTTER_VERSION=3.38.9 -DFLUTTER_CHANNEL=stable -DFLUTTER_GIT_URL=https://github.com/flutter/flutter.git -DFLUTTER_FRAMEWORK_REVISION=67323de285 -DFLUTTER_ENGINE_REVISION=587c18f873 -DFLUTTER_DART_VERSION=3.10.8 -DFLUTTER_WEB_USE_SKIA=false -DFLUTTER_WEB_USE_SKWASM=true -DFLUTTER_WEB_CANVASKIT_URL=https://www.gstatic.com/flutter-canvaskit/587c18f873b8ab57330422bce09047420d9c7f42/ --extra-compiler-option=--depfile=C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\dart2wasm.d -O2 --strip-wasm --no-source-maps --minify --extra-compiler-option=--dry-run -o C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\main.dart.wasm C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\main.dart
+[+3611 ms] input.json contents:
+           {
+             "assets": {},
+             "config": {
+               "build_asset_types": [],
+               "linking_enabled": true
+             },
+             "out_dir_shared": "C:\\Users\\ignac\\Documents\\github projects\\Eitzy\\sefirot\\.dart_tool\\hooks_runner\\shared\\objective_c\\build\\",
+             "out_file": "C:\\Users\\ignac\\Documents\\github projects\\Eitzy\\sefirot\\.dart_tool\\hooks_runner\\objective_c\\6782ff62a082d25dd9788598e67912e5\\output.json",
+             "package_name": "objective_c",
+             "package_root": "C:\\Users\\ignac\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\objective_c-9.3.0\\",
+             "user_defines": {}
+           }
+[   +5 ms] Running `(cd C:\Users\ignac\AppData\Local\Pub\Cache\hosted\pub.dev\objective_c-9.3.0\; PATH=C:\Python314\Scripts\;C:\Python314\;C:\Program Files\Microsoft\jdk-17.0.17.10-hotspot\bin;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\nodejs\;C:\ProgramData\chocolatey\bin;C:\Program Files\Calibre2\;C:\Program Files\CMake\bin;C:\Program Files\Git\cmd;C:\Users\ignac\AppData\Local\Python\bin;C:\dev\flutter\bin;C:\Users\ignac\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\ignac\AppData\Local\Android\Sdk\platform-tools;C:\Users\ignac\AppData\Local\Android\Sdk\cmdline-tools\latest\bin;C:\Users\ignac\AppData\Roaming\npm;C:\Users\ignac\AppData\Local\Pub\Cache\bin;C:\Users\ignac\.local\bin;C:\Users\ignac\AppData\Local\Programs\Antigravity\bin;C:\Users\ignac\.lmstudio\bin;C:\dev\flutter\bin\mingit\cmd PROGRAMDATA=C:\ProgramData SYSTEMDRIVE=C: SYSTEMROOT=C:\windows TEMP=C:\Users\ignac\AppData\Local\Temp TMP=C:\Users\ignac\AppData\Local\Temp USERPROFILE=C:\Users\ignac WINDIR=C:\windows C:\dev\flutter\bin\cache\dart-sdk\bin\dart '--packages=C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\package_config.json' 'C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\hooks_runner\objective_c\6782ff62a082d25dd9788598e67912e5\hook.dill' '--config=C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\hooks_runner\objective_c\6782ff62a082d25dd9788598e67912e5\input.json' )`.
+[ +328 ms] output.json contents:
+           {
+             "assets_for_linking": {},
+             "status": "success",
+             "timestamp": "2026-02-25 22:14:41.000"
+           }
+[  +38 ms] Building native assets for web done.
+[   +4 ms] dart_build: Complete
+[+12683 ms] lib/presentation/auth/login_screen.dart:67:22:
+            Error: The getter 'authRepositoryProvider' isn't defined for the type '_LoginScreenState'.
+             - '_LoginScreenState' is from 'package:sefirot/presentation/auth/login_screen.dart' ('lib/presentation/auth/login_screen.dart').
+                  await ref.read(authRepositoryProvider).sendPasswordReset(email);
+                                 ^^^^^^^^^^^^^^^^^^^^^^
+            lib/presentation/auth/login_screen.dart:339:50:
+            Error: Not a constant expression.
+                                                      color: _googleBlue,
+                                                             ^^^^^^^^^^^
+            lib/presentation/auth/login_screen.dart:317:48:
+            Error: The getter '_googleBlue' isn't defined for the type '_AuthCard'.
+             - '_AuthCard' is from 'package:sefirot/presentation/auth/login_screen.dart' ('lib/presentation/auth/login_screen.dart').
+                                          backgroundColor: _googleBlue,
+                                                           ^^^^^^^^^^^
+            Error: Compilation failed.
+[+88072 ms] Wasm dry run succeeded. Consider building and testing your application with the `--wasm` flag. See docs for more info: https://docs.flutter.dev/platform-integration/web/wasm
+[   +1 ms] Use --no-wasm-dry-run to disable these warnings.
+[  +35 ms] dart2wasm: Complete
+[  +13 ms] Persisting file store
+[   +8 ms] Done persisting file store
+[  +30 ms] Target dart2js failed: ProcessException: Process exited abnormally with exit code 1:
+           lib/presentation/auth/login_screen.dart:67:22:
+           Error: The getter 'authRepositoryProvider' isn't defined for the type '_LoginScreenState'.
+            - '_LoginScreenState' is from 'package:sefirot/presentation/auth/login_screen.dart' ('lib/presentation/auth/login_screen.dart').
+                 await ref.read(authRepositoryProvider).sendPasswordReset(email);
+                                ^^^^^^^^^^^^^^^^^^^^^^
+           lib/presentation/auth/login_screen.dart:339:50:
+           Error: Not a constant expression.
+                                                     color: _googleBlue,
+                                                            ^^^^^^^^^^^
+           lib/presentation/auth/login_screen.dart:317:48:
+           Error: The getter '_googleBlue' isn't defined for the type '_AuthCard'.
+            - '_AuthCard' is from 'package:sefirot/presentation/auth/login_screen.dart' ('lib/presentation/auth/login_screen.dart').
+                                         backgroundColor: _googleBlue,
+                                                          ^^^^^^^^^^^
+           Error: Compilation failed.
+             Command: C:\dev\flutter\bin\cache\dart-sdk\bin\dart.exe compile js --platform-binaries=C:\dev\flutter\bin\cache\flutter_web_sdk\kernel --invoker=flutter_tool -Ddart.vm.product=true -DFLUTTER_VERSION=3.38.9 -DFLUTTER_CHANNEL=stable -DFLUTTER_GIT_URL=https://github.com/flutter/flutter.git -DFLUTTER_FRAMEWORK_REVISION=67323de285 -DFLUTTER_ENGINE_REVISION=587c18f873 -DFLUTTER_DART_VERSION=3.10.8 -DFLUTTER_WEB_USE_SKIA=true -DFLUTTER_WEB_USE_SKWASM=false -DFLUTTER_WEB_CANVASKIT_URL=https://www.gstatic.com/flutter-canvaskit/587c18f873b8ab57330422bce09047420d9c7f42/ --native-null-assertions --no-source-maps -O4 --minify -o C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\app.dill --packages=C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\package_config.json --cfe-only C:\Users\ignac\Documents\github projects\Eitzy\sefirot\.dart_tool\flutter_build\008fadffe2cb55e0b4a10188ad868ac9\main.dart
+           #0      RunResult.throwException (package:flutter_tools/src/base/process.dart:153:5)
+           #1      _DefaultProcessUtils.run (package:flutter_tools/src/base/process.dart:379:19)
+           <asynchronous suspension>
+           #2      Dart2JSTarget.build (package:flutter_tools/src/build_system/targets/web.dart:207:5)
+           <asynchronous suspension>
+           #3      _BuildInstance._invokeInternal (package:flutter_tools/src/build_system/build_system.dart:895:9)
+           <asynchronous suspension>
+           #4      Future.wait.<anonymous closure> (dart:async/future.dart:546:21)
+           <asynchronous suspension>
+           #5      _BuildInstance.invokeTarget (package:flutter_tools/src/build_system/build_system.dart:833:32)
+           <asynchronous suspension>
+           #6      Future.wait.<anonymous closure> (dart:async/future.dart:546:21)
+           <asynchronous suspension>
+           #7      _BuildInstance.invokeTarget (package:flutter_tools/src/build_system/build_system.dart:833:32)
+           <asynchronous suspension>
+           #8      FlutterBuildSystem.build (package:flutter_tools/src/build_system/build_system.dart:653:16)
+           <asynchronous suspension>
+           #9      WebBuilder.buildWeb (package:flutter_tools/src/web/compile.dart:94:34)
+           <asynchronous suspension>
+           #10     BuildWebCommand.runCommand (package:flutter_tools/src/commands/build_web.dart:296:5)
+           <asynchronous suspension>
+           #11     FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1559:27)
+           <asynchronous suspension>
+           #12     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #13     CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+           <asynchronous suspension>
+           #14     FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:487:9)
+           <asynchronous suspension>
+           #15     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #16     FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:422:5)
+           <asynchronous suspension>
+           #17     run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:104:11)
+           <asynchronous suspension>
+           #18     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #19     main (package:flutter_tools/executable.dart:103:3)
+           <asynchronous suspension>
+
+[   +5 ms] Compiling lib\main.dart for the Web... (completed in 105.3s)
+[   +1 ms] "flutter web" took 106,387ms.
+[ +210 ms] Error: Failed to compile application for the Web.
+[        ] 
+           #0      throwToolExit (package:flutter_tools/src/base/common.dart:34:3)
+           #1      WebBuilder.buildWeb (package:flutter_tools/src/web/compile.dart:137:7)
+           <asynchronous suspension>
+           #2      BuildWebCommand.runCommand (package:flutter_tools/src/commands/build_web.dart:296:5)
+           <asynchronous suspension>
+           #3      FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1559:27)
+           <asynchronous suspension>
+           #4      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #5      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+           <asynchronous suspension>
+           #6      FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:487:9)
+           <asynchronous suspension>
+           #7      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #8      FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:422:5)
+           <asynchronous suspension>
+           #9      run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:104:11)
+           <asynchronous suspension>
+           #10     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #11     main (package:flutter_tools/executable.dart:103:3)
+           <asynchronous suspension>
+
+
+[        ] Running 1 shutdown hook
+[   +1 ms] Shutdown hooks complete
+[ +106 ms] exiting with code 1

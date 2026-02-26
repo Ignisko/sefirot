@@ -1,0 +1,200 @@
+Analyzing sefirot...                                            
+
+warning - Unused import: 'dart:io' - decode.dart:2:8 - unused_import
+   info - Don't invoke 'print' in production code - decode.dart:19:3 - avoid_print
+warning - Unused import: 'presentation/auth/verify_email_screen.dart' - lib\main.dart:8:8 - unused_import
+warning - Unused import: 'presentation/auth/login_screen.dart' - lib\main.dart:9:8 - unused_import
+warning - Unused import: 'presentation/home/home_screen.dart' - lib\main.dart:10:8 - unused_import
+warning - Unused import: 'presentation/onboarding/onboarding_screen.dart' - lib\main.dart:11:8 - unused_import
+warning - Unused import: 'core/providers/user_provider.dart' - lib\main.dart:12:8 - unused_import
+  error - Methods can't be invoked in constant expressions - lib\presentation\admin\admin_dashboard.dart:136:122 - const_eval_method_invocation
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\admin\admin_dashboard.dart:168:73 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\admin\admin_dashboard.dart:175:161 - deprecated_member_use
+  error - Methods can't be invoked in constant expressions - lib\presentation\admin\admin_dashboard.dart:175:293 - const_eval_method_invocation
+warning - Unused import: '../../core/providers/user_provider.dart' - lib\presentation\admin\user_actions_helper.dart:6:8 - unused_import
+  error - Can't have modifier 'final' here - lib\presentation\admin\user_actions_helper.dart:8:1 - extraneous_modifier
+   info - Missing type annotation - lib\presentation\admin\user_actions_helper.dart:8:7 - strict_top_level_inference
+   info - The variable name 'Theme' isn't a lowerCamelCase identifier - lib\presentation\admin\user_actions_helper.dart:8:7 - non_constant_identifier_names
+  error - Functions must have an explicit list of parameters - lib\presentation\admin\user_actions_helper.dart:8:7 - missing_function_parameters
+  error - A function body must be provided - lib\presentation\admin\user_actions_helper.dart:8:12 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - lib\presentation\admin\user_actions_helper.dart:8:12 - expected_executable
+   info - Missing type annotation - lib\presentation\admin\user_actions_helper.dart:8:13 - strict_top_level_inference
+   info - Missing type annotation - lib\presentation\admin\user_actions_helper.dart:8:16 - strict_top_level_inference
+  error - A function body must be provided - lib\presentation\admin\user_actions_helper.dart:8:24 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - lib\presentation\admin\user_actions_helper.dart:8:24 - expected_executable
+   info - Missing type annotation - lib\presentation\admin\user_actions_helper.dart:8:25 - strict_top_level_inference
+  error - Functions must have an explicit list of parameters - lib\presentation\admin\user_actions_helper.dart:8:25 - missing_function_parameters
+  error - A function body must be provided - lib\presentation\admin\user_actions_helper.dart:8:36 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - lib\presentation\admin\user_actions_helper.dart:8:36 - expected_executable
+  error - Variables must be declared using the keywords 'const', 'final', 'var' or a type name - lib\presentation\admin\user_actions_helper.dart:8:37 - missing_const_final_var_or_type
+  error - Can't have modifier 'final' here - lib\presentation\admin\user_actions_helper.dart:9:1 - extraneous_modifier
+   info - Missing type annotation - lib\presentation\admin\user_actions_helper.dart:9:7 - strict_top_level_inference
+   info - The variable name 'Theme' isn't a lowerCamelCase identifier - lib\presentation\admin\user_actions_helper.dart:9:7 - non_constant_identifier_names
+  error - Functions must have an explicit list of parameters - lib\presentation\admin\user_actions_helper.dart:9:7 - missing_function_parameters
+  error - The name 'Theme' is already defined - lib\presentation\admin\user_actions_helper.dart:9:7 - duplicate_definition
+  error - A function body must be provided - lib\presentation\admin\user_actions_helper.dart:9:12 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - lib\presentation\admin\user_actions_helper.dart:9:12 - expected_executable
+   info - Missing type annotation - lib\presentation\admin\user_actions_helper.dart:9:13 - strict_top_level_inference
+  error - The name 'of' is already defined - lib\presentation\admin\user_actions_helper.dart:9:13 - duplicate_definition
+   info - Missing type annotation - lib\presentation\admin\user_actions_helper.dart:9:16 - strict_top_level_inference
+  error - A function body must be provided - lib\presentation\admin\user_actions_helper.dart:9:24 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - lib\presentation\admin\user_actions_helper.dart:9:24 - expected_executable
+   info - Missing type annotation - lib\presentation\admin\user_actions_helper.dart:9:25 - strict_top_level_inference
+  error - Functions must have an explicit list of parameters - lib\presentation\admin\user_actions_helper.dart:9:25 - missing_function_parameters
+  error - The name 'colorScheme' is already defined - lib\presentation\admin\user_actions_helper.dart:9:25 - duplicate_definition
+  error - A function body must be provided - lib\presentation\admin\user_actions_helper.dart:9:36 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - lib\presentation\admin\user_actions_helper.dart:9:36 - expected_executable
+  error - Variables must be declared using the keywords 'const', 'final', 'var' or a type name - lib\presentation\admin\user_actions_helper.dart:9:37 - missing_const_final_var_or_type
+  error - The method 'of' isn't defined for the type 'Function' - lib\presentation\admin\user_actions_helper.dart:43:62 - undefined_method
+  error - The method 'of' isn't defined for the type 'Function' - lib\presentation\admin\user_actions_helper.dart:44:88 - undefined_method
+  error - The method 'of' isn't defined for the type 'Function' - lib\presentation\admin\user_actions_helper.dart:68:64 - undefined_method
+   info - 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre - lib\presentation\admin\user_actions_helper.dart:120:21 - deprecated_member_use
+   info - 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre - lib\presentation\admin\user_actions_helper.dart:121:21 - deprecated_member_use
+  error - The method 'of' isn't defined for the type 'Function' - lib\presentation\admin\user_actions_helper.dart:150:48 - undefined_method
+  error - The method 'of' isn't defined for the type 'Function' - lib\presentation\admin\user_actions_helper.dart:162:70 - undefined_method
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\auth\login_screen.dart:116:64 - deprecated_member_use
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:180:32 - const_eval_method_invocation
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\auth\login_screen.dart:240:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\auth\login_screen.dart:261:49 - deprecated_member_use
+  error - Undefined name '_googleBlue' - lib\presentation\auth\login_screen.dart:318:48 - undefined_identifier
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:335:46 - const_eval_method_invocation
+  error - Invalid constant value - lib\presentation\auth\login_screen.dart:340:50 - invalid_constant
+  error - Undefined name '_googleBlue' - lib\presentation\auth\login_screen.dart:340:50 - undefined_identifier
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:348:48 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:407:107 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:430:48 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:441:50 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:472:58 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:483:58 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:518:51 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:524:20 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\auth\login_screen.dart:535:43 - const_eval_method_invocation
+warning - A value for optional parameter 'dark' isn't ever given - lib\presentation\auth\login_screen.dart:545:25 - unused_element_parameter
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:75:24 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:86:16 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:119:24 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:162:14 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:182:28 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:197:24 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:233:71 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:249:36 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:250:55 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:256:42 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:256:72 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:305:51 - ambiguous_import
+  error - Invalid constant value - lib\presentation\browse\browse_screen.dart:317:34 - invalid_constant
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:317:34 - ambiguous_import
+  error - Invalid constant value - lib\presentation\browse\browse_screen.dart:335:44 - invalid_constant
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:335:44 - ambiguous_import
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\presentation\browse\browse_screen.dart:378:7 - deprecated_member_use
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:425:43 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:514:37 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:514:77 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:517:14 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:614:37 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:614:77 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:617:14 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:707:28 - ambiguous_import
+  error - Invalid constant value - lib\presentation\browse\browse_screen.dart:714:24 - invalid_constant
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:714:24 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:736:20 - ambiguous_import
+  error - Invalid constant value - lib\presentation\browse\browse_screen.dart:741:40 - invalid_constant
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:741:40 - ambiguous_import
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\browse\browse_screen.dart:747:35 - deprecated_member_use
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:765:33 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:765:73 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:867:30 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:934:36 - ambiguous_import
+  error - Invalid constant value - lib\presentation\browse\browse_screen.dart:939:34 - invalid_constant
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:939:34 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:947:30 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:968:30 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:985:38 - ambiguous_import
+  error - Invalid constant value - lib\presentation\browse\browse_screen.dart:994:38 - invalid_constant
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:994:38 - ambiguous_import
+  error - Invalid constant value - lib\presentation\browse\browse_screen.dart:997:38 - invalid_constant
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:997:38 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:1024:27 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:1024:67 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:1044:22 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:1060:27 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:1060:67 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:1144:34 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:1146:53 - ambiguous_import
+  error - Invalid constant value - lib\presentation\browse\browse_screen.dart:1150:40 - invalid_constant
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:1150:40 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:1170:34 - ambiguous_import
+  error - Invalid constant value - lib\presentation\browse\browse_screen.dart:1176:54 - invalid_constant
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:1176:54 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:1193:34 - ambiguous_import
+  error - Invalid constant value - lib\presentation\browse\browse_screen.dart:1199:30 - invalid_constant
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\browse\browse_screen.dart:1199:30 - ambiguous_import
+   info - Unnecessary use of multiple underscores - lib\presentation\chat\chat_list_screen.dart:93:35 - unnecessary_underscores
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\presentation\chat\chat_list_screen.dart:109:35 - use_build_context_synchronously
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\chat\chat_list_screen.dart:184:42 - deprecated_member_use
+  error - Methods can't be invoked in constant expressions - lib\presentation\chat\chat_list_screen.dart:207:38 - const_eval_method_invocation
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\chat\chat_screen.dart:161:53 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\chat\chat_screen.dart:164:24 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\chat\chat_screen.dart:166:26 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\chat\chat_screen.dart:170:65 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\chat\chat_screen.dart:192:28 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\chat\chat_screen.dart:201:48 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\chat\chat_screen.dart:274:18 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\chat\chat_screen.dart:298:30 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\chat\chat_screen.dart:313:54 - ambiguous_import
+  error - Invalid constant value - lib\presentation\chat\chat_screen.dart:322:38 - invalid_constant
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\chat\chat_screen.dart:322:38 - ambiguous_import
+  error - Invalid constant value - lib\presentation\chat\chat_screen.dart:326:40 - invalid_constant
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\chat\chat_screen.dart:326:40 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\chat\chat_screen.dart:367:25 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\chat\chat_screen.dart:367:67 - ambiguous_import
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\chat\chat_screen.dart:376:37 - deprecated_member_use
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\chat\chat_screen.dart:388:35 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\chat\chat_screen.dart:388:65 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\chat\chat_screen.dart:398:31 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\chat\chat_screen.dart:406:33 - ambiguous_import
+  error - The name 'Theme' is defined in the libraries 'package:flutter/src/material/theme.dart (via package:flutter/material.dart)' and 'package:sefirot/presentation/admin/user_actions_helper.dart' - lib\presentation\chat\chat_screen.dart:407:33 - ambiguous_import
+warning - Unused import: '../../domain/models/user_model.dart' - lib\presentation\home\dashboard_screen.dart:7:8 - unused_import
+warning - Unused import: '../browse/browse_screen.dart' - lib\presentation\home\dashboard_screen.dart:8:8 - unused_import
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\dashboard_screen.dart:173:67 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\dashboard_screen.dart:178:67 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\dashboard_screen.dart:199:45 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\dashboard_screen.dart:252:34 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\dashboard_screen.dart:279:38 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\dashboard_screen.dart:301:39 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\dashboard_screen.dart:341:39 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\dashboard_screen.dart:385:42 - const_eval_method_invocation
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\home\dashboard_screen.dart:413:54 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\home\dashboard_screen.dart:433:79 - deprecated_member_use
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\dashboard_screen.dart:436:63 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\dashboard_screen.dart:472:24 - const_eval_method_invocation
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\presentation\home\dashboard_screen.dart:492:48 - deprecated_member_use
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:212:34 - const_eval_method_invocation
+warning - A value for optional parameter 'icon' isn't ever given - lib\presentation\home\home_screen.dart:309:10 - unused_element_parameter
+warning - A value for optional parameter 'badge' isn't ever given - lib\presentation\home\home_screen.dart:313:10 - unused_element_parameter
+warning - A value for optional parameter 'destructive' isn't ever given - lib\presentation\home\home_screen.dart:314:10 - unused_element_parameter
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:394:38 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:431:24 - const_eval_method_invocation
+  error - Undefined name 'context' - lib\presentation\home\home_screen.dart:591:33 - undefined_identifier
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:656:32 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:664:26 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:671:36 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:675:38 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:713:55 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:757:32 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:817:28 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:979:38 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:982:59 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:1008:64 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:1084:34 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:1087:34 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\home\home_screen.dart:1115:49 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\onboarding\onboarding_screen.dart:332:61 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\onboarding\onboarding_screen.dart:386:55 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\onboarding\onboarding_screen.dart:407:57 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\onboarding\onboarding_screen.dart:411:34 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\onboarding\onboarding_screen.dart:430:56 - const_eval_method_invocation
+   info - Unnecessary use of multiple underscores - lib\presentation\onboarding\onboarding_screen.dart:474:37 - unnecessary_underscores
+  error - Methods can't be invoked in constant expressions - lib\presentation\onboarding\onboarding_screen.dart:513:40 - const_eval_method_invocation
+  error - Methods can't be invoked in constant expressions - lib\presentation\onboarding\onboarding_screen.dart:638:55 - const_eval_method_invocation
+
