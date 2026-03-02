@@ -14,6 +14,7 @@ import '../../presentation/browse/browse_screen.dart';
 import '../../presentation/chat/chat_list_screen.dart';
 import '../../presentation/admin/admin_dashboard.dart';
 import '../../presentation/home/banned_screen.dart';
+import '../../presentation/about/about_screen.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -92,6 +93,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                        case 1: context.go('/browse'); break;
                        case 2: context.go('/messages'); break;
                        case 3: context.go('/profile'); break;
+                       case 4: context.go('/about'); break;
                      }
                   },
                 ),
@@ -121,6 +123,14 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/profile',
                 builder: (context, state) => const ProfilePane(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/about',
+                builder: (context, state) => const AboutScreen(),
               ),
             ],
           ),

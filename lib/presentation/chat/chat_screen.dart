@@ -6,8 +6,10 @@ import '../../core/providers/auth_provider.dart';
 import '../../domain/models/user_model.dart';
 import '../../core/providers/matchmaking_provider.dart';
 import '../admin/user_actions_helper.dart';
+import '../browse/browse_screen.dart';
 
 // ── Palette ───────────────────────────────────────────────────────────────────
+
 
 
 
@@ -85,9 +87,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     try {
       // Client-side rate limit check
       if (await _isRateLimited(_myUid)) {
-        _snack('Daily message limit reached (40/day). Come back tomorrow 🙏');
+        _snack('Daily message limit reached (40/day). Come back tomorrow.');
         return;
       }
+      
+      // Ensure the chat document is created before sending the first message
+      await _ensureChatDoc();
 
       await ref.read(matchmakingRepositoryProvider).sendMessage(_chatId, _myUid, text);
       _ctrl.clear();
@@ -150,32 +155,40 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           icon: Text('←', style: TextStyle(fontSize: 18, color: Theme.of(context).colorScheme.onSurface)),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Row(children: [
-          CircleAvatar(
-            radius: 18,
-            backgroundColor: color.withValues(alpha: 0.12),
-            backgroundImage: widget.peer.photoUrl.isNotEmpty
-                ? NetworkImage(widget.peer.photoUrl)
-                : null,
-            child: widget.peer.photoUrl.isEmpty
-                ? Text(initials,
-                    style: TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.bold, color: color))
-                : null,
+        title: GestureDetector(
+          onTap: () => showProfileDetail(context, widget.peer),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 18,
+                backgroundColor: color.withValues(alpha: 0.12),
+                backgroundImage: widget.peer.photoUrl.isNotEmpty
+                    ? NetworkImage(widget.peer.photoUrl)
+                    : null,
+                child: widget.peer.photoUrl.isEmpty
+                    ? Text(initials,
+                        style: TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.bold, color: color))
+                    : null,
+              ),
+              const SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name,
+                      style: GoogleFonts.outfit(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.onSurface)),
+                  if (widget.peer.nationality.isNotEmpty)
+                    Text(widget.peer.nationality,
+                        style: const TextStyle(
+                            fontSize: 11, color: Colors.black38)),
+                ],
+              ),
+            ],
           ),
-          const SizedBox(width: 10),
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(name,
-                style: GoogleFonts.outfit(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onSurface)),
-            if (widget.peer.nationality.isNotEmpty)
-              Text(widget.peer.nationality,
-                  style: const TextStyle(
-                      fontSize: 11, color: Colors.black38)),
-          ]),
-        ]),
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.more_vert, color: Theme.of(context).colorScheme.onSurface),
@@ -205,7 +218,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text('🙏', style: TextStyle(fontSize: 40)),
+                        Icon(Icons.message_outlined, size: 40, color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)),
                         const SizedBox(height: 12),
                         Text('Start the conversation',
                             style: GoogleFonts.outfit(
@@ -213,9 +226,16 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black45)),
                         const SizedBox(height: 6),
-                        Text('Say hello to $name',
-                            style: const TextStyle(
-                                fontSize: 13, color: Colors.black38)),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Say hello to $name',
+                                style: const TextStyle(
+                                    fontSize: 13, color: Colors.black38)),
+                            const SizedBox(width: 4),
+                            Icon(Icons.arrow_forward_rounded, size: 14, color: Colors.black26),
+                          ],
+                        ),
                       ],
                     ),
                   ),

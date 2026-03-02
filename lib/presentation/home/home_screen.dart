@@ -1,14 +1,23 @@
+// Removed dart:html to fix Windows build crash
+import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:path/path.dart' as p;
+
 import '../../core/providers/auth_provider.dart';
 import '../../core/providers/user_provider.dart';
-import '../../core/providers/theme_provider.dart';
 import '../../core/constants/languages.dart';
+import '../../core/constants/countries.dart';
+import '../admin/user_actions_helper.dart';
 import '../../domain/models/user_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // ── Seoul 2027 Palette ────────────────────────────────────────────────────────
 
@@ -17,23 +26,8 @@ import '../../domain/models/user_model.dart';
 
 
 
-const _countries = [
-  '🇦🇺 Australia', '🇦🇹 Austria', '🇧🇷 Brazil', '🇨🇦 Canada',
-  '🇨🇱 Chile', '🇨🇳 China', '🇨🇴 Colombia', '🇨🇷 Costa Rica',
-  '🇨🇿 Czech Republic', '🇩🇰 Denmark', '🇩🇴 Dominican Republic',
-  '🇪🇨 Ecuador', '🇪🇬 Egypt', '🇸🇻 El Salvador', '🇫🇮 Finland',
-  '🇫🇷 France', '🇩🇪 Germany', '🇬🇭 Ghana', '🇬🇷 Greece',
-  '🇬🇹 Guatemala', '🇭🇳 Honduras', '🇭🇺 Hungary', '🇮🇳 India',
-  '🇮🇩 Indonesia', '🇮🇪 Ireland', '🇮🇱 Israel', '🇮🇹 Italy',
-  '🇯🇵 Japan', '🇰🇪 Kenya', '🇰🇷 South Korea', '🇲🇽 Mexico',
-  '🇳🇱 Netherlands', '🇳🇿 New Zealand', '🇳🇬 Nigeria', '🇳🇴 Norway',
-  '🇵🇦 Panama', '🇵🇾 Paraguay', '🇵🇪 Peru', '🇵🇭 Philippines',
-  '🇵🇱 Poland', '🇵🇹 Portugal', '🇷🇴 Romania', '🇷🇺 Russia',
-  '🇸🇬 Singapore', '🇿🇦 South Africa', '🇪🇸 Spain', '🇸🇪 Sweden',
-  '🇨🇭 Switzerland', '🇹🇼 Taiwan', '🇹🇭 Thailand', '🇹🇷 Turkey',
-  '🇺🇦 Ukraine', '🇬🇧 United Kingdom', '🇺🇸 United States',
-  '🇺🇾 Uruguay', '🇻🇪 Venezuela', '🇻🇳 Vietnam',
-];
+// ── Country list ─────────────────────────────────────────────────────────────
+final List<String> _countries = globalCountries;
 
 final List<String> _languages = globalLanguages;
 
@@ -53,7 +47,6 @@ const _dioceses = [
   'Archdiocese of Gwangju',
   'Diocese of Jeonju',
   'Diocese of Jeju',
-  'Military Ordinariate of Korea'
 ];
 
 // ── Root Shell ────────────────────────────────────────────────────────────────
@@ -80,11 +73,12 @@ class HomeScreen extends ConsumerWidget {
 
     // Mobile: bottom nav
     final destinations = [
-      const NavigationDestination(icon: Text('🏠', style: TextStyle(fontSize: 18)), label: 'Home'),
-      const NavigationDestination(icon: Text('🔍', style: TextStyle(fontSize: 18)), label: 'Browse'),
-      const NavigationDestination(icon: Text('💬', style: TextStyle(fontSize: 18)), label: 'Messages'),
-      const NavigationDestination(icon: Text('👤', style: TextStyle(fontSize: 18)), label: 'Profile'),
-      if (isAdmin) const NavigationDestination(icon: Text('🛡️', style: TextStyle(fontSize: 18)), label: 'Admin'),
+      const NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Home'),
+      const NavigationDestination(icon: Icon(Icons.search_outlined), selectedIcon: Icon(Icons.search), label: 'Browse'),
+      const NavigationDestination(icon: Icon(Icons.chat_bubble_outline), selectedIcon: Icon(Icons.chat_bubble), label: 'Messages'),
+      const NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Profile'),
+      const NavigationDestination(icon: Icon(Icons.info_outline), selectedIcon: Icon(Icons.info), label: 'About'),
+      if (isAdmin) const NavigationDestination(icon: Icon(Icons.admin_panel_settings_outlined), selectedIcon: Icon(Icons.admin_panel_settings), label: 'Admin'),
     ];
 
     return Scaffold(
@@ -165,14 +159,6 @@ class _Sidebar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final completionTasks = [
-      ('Add a profile photo', user.photoUrl.isNotEmpty),
-      ('Write your bio', user.bio.isNotEmpty),
-      ('Set your nationality', user.nationality.isNotEmpty),
-      ('Add languages', user.languages.isNotEmpty),
-    ];
-    final done = completionTasks.where((t) => t.$2).length;
-    final isComplete = done == completionTasks.length;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -194,97 +180,84 @@ class _Sidebar extends ConsumerWidget {
         const Divider(height: 1),
 
         // Profile mini card
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              _SmallAvatar(user: user),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _firstName(user),
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                          color: Theme.of(context).colorScheme.onSurface),
-                      overflow: TextOverflow.ellipsis,
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => onTabChange(3),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  _SmallAvatar(user: user),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _firstName(user),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: Theme.of(context).colorScheme.onSurface),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          user.accountType == 'volunteer'
+                              ? 'Volunteer'
+                              : 'Pilgrim',
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.black45),
+                        ),
+                      ],
                     ),
-                    Text(
-                      user.accountType == 'volunteer'
-                          ? 'Volunteer 🤝'
-                          : 'Pilgrim 🙏',
-                      style: const TextStyle(
-                          fontSize: 12, color: Colors.black45),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
 
-        // Profile completion
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(isComplete ? 'Profile Complete 🎉' : 'Complete your profile',
-                  style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: isComplete ? const Color(0xFF2E7D32) : Colors.black38,
-                      letterSpacing: 0.8)),
-              if (!isComplete) ...[
-                const SizedBox(height: 6),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: LinearProgressIndicator(
-                    value: done / completionTasks.length,
-                    color: Theme.of(context).colorScheme.secondary,
-                    backgroundColor: Colors.black12,
-                    minHeight: 4,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                ...completionTasks.map((t) => _CheckItem(
-                    label: t.$1, 
-                    done: t.$2,
-                    onTap: t.$2 ? null : () => onTabChange(3),
-                )),
-              ],
-            ],
-          ),
-        ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 16),
         const Divider(),
 
         // Navigation items
         _NavItem(
             label: 'Dashboard',
+            icon: Icons.dashboard_outlined,
             selected: currentTab == 0,
             onTap: () => onTabChange(0)),
         _NavItem(
-            label: 'Browse Pilgrims',
+            label: 'Browse',
+            icon: Icons.people_outline,
             selected: currentTab == 1,
             onTap: () => onTabChange(1)),
         _NavItem(
             label: 'Messages',
+            icon: Icons.chat_bubble_outline,
             selected: currentTab == 2,
             onTap: () => onTabChange(2)),
         _NavItem(
             label: 'My Profile',
+            icon: Icons.person_outline,
             selected: currentTab == 3,
             onTap: () => onTabChange(3)),
-        if (isAdmin) ...[
-          _NavItem(
-              label: 'Admin Dashboard',
-              selected: currentTab == 4,
-              onTap: () => onTabChange(4)),
-        ],
+        _NavItem(
+            label: 'About',
+            icon: Icons.info_outline,
+            selected: currentTab == 4,
+            onTap: () => onTabChange(4)),
+        _NavItem(
+            label: 'Admin',
+            icon: Icons.admin_panel_settings_outlined,
+            selected: false, // It's an external link now
+            onTap: () async {
+               // Open flareline admin externally
+               final url = Uri.parse('https://sefirot-admin.vercel.app'); 
+               if (await canLaunchUrl(url)) {
+                 await launchUrl(url);
+               }
+            }),
 
         const Spacer(),
       ],
@@ -299,11 +272,13 @@ class _Sidebar extends ConsumerWidget {
 
 class _NavItem extends StatelessWidget {
   final String label;
+  final IconData icon;
   final bool selected;
   final VoidCallback onTap;
 
   const _NavItem({
     required this.label,
+    required this.icon,
     required this.selected,
     required this.onTap,
   });
@@ -324,6 +299,8 @@ class _NavItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
           child: Row(
             children: [
+              Icon(icon, size: 18, color: color),
+              const SizedBox(width: 12),
               Text(
                 label,
                 style: TextStyle(
@@ -366,10 +343,9 @@ class _CheckItem extends StatelessWidget {
               ),
               child: done
                   ? Center(
-                      child: Text('✓',
-                          style: TextStyle(
-                              color: Theme.of(context).cardColor, fontSize: 8,
-                              fontWeight: FontWeight.bold)))
+                      child: Icon(Icons.check,
+                          color: Theme.of(context).cardColor, size: 10,
+                          weight: 900))
                   : null,
             ),
             const SizedBox(width: 8),
@@ -521,8 +497,8 @@ class _ProfileContent extends ConsumerWidget {
               children: [
                 _Badge(
                     label: user.accountType == 'volunteer'
-                        ? 'Volunteer 🤝'
-                        : 'Pilgrim 🙏',
+                        ? 'Volunteer'
+                        : 'Pilgrim',
                     color: user.accountType == 'volunteer' ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.secondary),
                 if (user.nationality.isNotEmpty)
                   _Badge(label: user.nationality, color: Colors.black54),
@@ -533,7 +509,7 @@ class _ProfileContent extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           _EditCard(
-            title: 'Languages  ${user.languages.length}/7',
+            title: 'Languages',
             onEdit: () => _openEdit(context, user, _EditField.languages),
             child: user.languages.isEmpty
                 ? const Text('Add languages you speak...',
@@ -546,15 +522,53 @@ class _ProfileContent extends ConsumerWidget {
                         .toList(),
                   ),
           ),
+          const SizedBox(height: 12),
+          _EditCard(
+            title: 'Location & City',
+            onEdit: () => _openEdit(context, user, _EditField.location),
+            child: Row(
+              children: [
+                const Icon(Icons.location_on_outlined, size: 16, color: Colors.black38),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    user.city.isNotEmpty ? user.city : 'Set your city...',
+                    style: TextStyle(
+                        color: user.city.isNotEmpty ? Colors.black87 : Colors.black38,
+                        fontSize: 14),
+                  ),
+                ),
+                if (user.lat != null && user.lng != null)
+                  _Badge(label: 'Fixed Location', color: Colors.green),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          _EditCard(
+            title: 'Matchmaking Age Preferences',
+            onEdit: () => _openEdit(context, user, _EditField.agePreferences),
+            child: Row(
+              children: [
+                const Icon(Icons.people_outline, size: 16, color: Colors.black38),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Looking for pilgrims between ${(user.targetMinAge ?? 18)} and ${(user.targetMaxAge ?? 100)}',
+                    style: const TextStyle(color: Colors.black87, fontSize: 14),
+                  ),
+                ),
+              ],
+            ),
+          ),
           const SizedBox(height: 24),
 
           // ── Stats row ─────────────────────────────────────────────
           Row(children: const [
-            _StatCard(label: 'Connections', value: '0', emoji: '🤝'),
+            _StatCard(label: 'Connections', value: '0', icon: Icons.handshake_outlined),
             SizedBox(width: 12),
-            _StatCard(label: 'Messages', value: '0', emoji: '💬'),
+            _StatCard(label: 'Messages', value: '0', icon: Icons.chat_bubble_outline_rounded),
             SizedBox(width: 12),
-            _StatCard(label: 'Matches', value: '0', emoji: '✨'),
+            _StatCard(label: 'Matches', value: '0', icon: Icons.auto_awesome_outlined),
           ]),
         ],
       ),
@@ -586,23 +600,64 @@ class _BigAvatarState extends ConsumerState<_BigAvatar> {
   bool _uploading = false;
 
   Future<void> _pick() async {
-    final file = await ImagePicker().pickImage(
-      source: ImageSource.gallery, 
-      imageQuality: 75,
-      maxWidth: 800,
-      maxHeight: 800,
+    final pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 70,
+      maxWidth: 1000,
     );
-    if (file == null) return;
+    if (pickedFile == null) return;
     setState(() => _uploading = true);
+    
     try {
-      final bytes = await file.readAsBytes();
-      final mimeType = file.mimeType ?? 'image/jpeg';
       final storageRef = FirebaseStorage.instance
           .ref()
           .child('avatars/${widget.user.uid}');
-      await storageRef.putData(bytes, SettableMetadata(contentType: mimeType));
-      final url = await storageRef.getDownloadURL();
+
+      debugPrint('[PHOTO] Starting upload to avatars/${widget.user.uid}');
+      
+      String? url;
+      
+      final uploadBytes = await pickedFile.readAsBytes();
+      final ext = p.extension(pickedFile.path).toLowerCase();
+      final mimeType = (ext == '.png') ? 'image/png' : 'image/jpeg';
+
+      if (!kIsWeb && Platform.isWindows) {
+        // Use REST API on Windows to avoid firebase_storage C++ SDK crash
+        final token = await FirebaseAuth.instance.currentUser?.getIdToken();
+        final bucket = 'sefirot-ff9af.firebasestorage.app';
+        final path = Uri.encodeComponent('avatars/${widget.user.uid}');
+        final restUrl = Uri.parse('https://firebasestorage.googleapis.com/v0/b/$bucket/o?name=$path');
+        
+        final client = HttpClient();
+        final request = await client.postUrl(restUrl);
+        if (token != null) {
+           request.headers.set('Authorization', 'Bearer $token');
+        }
+        request.headers.set('Content-Type', mimeType);
+        request.add(uploadBytes);
+        
+        final response = await request.close();
+        final responseString = await response.transform(utf8.decoder).join();
+        
+        if (response.statusCode == 200) {
+          final js = jsonDecode(responseString);
+          final downloadToken = js['downloadTokens'];
+          url = 'https://firebasestorage.googleapis.com/v0/b/$bucket/o/$path?alt=media&token=$downloadToken';
+        } else {
+          throw Exception('Upload failed: ${response.statusCode} $responseString');
+        }
+      } else {
+        // Safe putData on all other platforms
+        await storageRef.putData(uploadBytes, SettableMetadata(contentType: mimeType));
+        url = await storageRef.getDownloadURL();
+      }
+      debugPrint('[PHOTO] Upload complete');
       await ref.read(userRepositoryProvider).updateUser(widget.user.copyWith(photoUrl: url));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile photo updated! ✓')),
+        );
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context)
@@ -728,11 +783,13 @@ class _EditCard extends StatelessWidget {
                         color: Colors.black38,
                         letterSpacing: 0.8)),
                 const Spacer(),
-                Text('Edit →',
+                Text('Edit',
                     style: TextStyle(
                         fontSize: 12,
                         color: Theme.of(context).colorScheme.secondary,
                         fontWeight: FontWeight.w600)),
+                const SizedBox(width: 4),
+                Icon(Icons.arrow_forward_ios_rounded, size: 10, color: Theme.of(context).colorScheme.secondary),
               ]),
               const SizedBox(height: 10),
               child,
@@ -769,8 +826,9 @@ class _Badge extends StatelessWidget {
 
 // ── Stat card ─────────────────────────────────────────────────────────────────
 class _StatCard extends StatelessWidget {
-  final String label, value, emoji;
-  const _StatCard({required this.label, required this.value, required this.emoji});
+  final String label, value;
+  final IconData icon;
+  const _StatCard({required this.label, required this.value, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -785,7 +843,7 @@ class _StatCard extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 20)),
+            Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5)),
             const SizedBox(height: 4),
             Text(value,
                 style: TextStyle(
@@ -804,7 +862,7 @@ class _StatCard extends StatelessWidget {
 }
 
 // ── Edit field enum + bottom sheet ───────────────────────────────────────────
-enum _EditField { bio, roleNatDioc, languages }
+enum _EditField { bio, roleNatDioc, languages, location, agePreferences }
 
 class _EditSheet extends ConsumerStatefulWidget {
   final UserModel user;
@@ -823,6 +881,12 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
   late String _nationality;
   late String _diocese;
   late List<String> _langs;
+  late final TextEditingController _cityCtrl;
+  late final TextEditingController _ageCtrl;
+  late double _targetMinAge;
+  late double _targetMaxAge;
+  double? _lat;
+  double? _lng;
   bool _saving = false;
 
   @override
@@ -835,6 +899,15 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
     _nationality = widget.user.nationality;
     _diocese = widget.user.diocese;
     _langs = List.from(widget.user.languages);
+    _cityCtrl = TextEditingController(text: widget.user.city);
+    _ageCtrl = TextEditingController(text: widget.user.age?.toString() ?? '');
+    _targetMinAge = (widget.user.targetMinAge ?? 18).toDouble();
+    _targetMaxAge = (widget.user.targetMaxAge ?? 100).toDouble();
+    if (_targetMinAge < 18) _targetMinAge = 18;
+    if (_targetMaxAge > 100) _targetMaxAge = 100;
+    if (_targetMinAge > _targetMaxAge) _targetMinAge = _targetMaxAge;
+    _lat = widget.user.lat;
+    _lng = widget.user.lng;
   }
 
   @override
@@ -842,6 +915,8 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
     _nameCtrl.dispose();
     _bioCtrl.dispose();
     _countrySearch.dispose();
+    _cityCtrl.dispose();
+    _ageCtrl.dispose();
     super.dispose();
   }
 
@@ -855,6 +930,12 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
             nationality: _nationality,
             diocese: _diocese,
             languages: _langs,
+            city: _cityCtrl.text.trim(),
+            age: int.tryParse(_ageCtrl.text),
+            targetMinAge: _targetMinAge.toInt(),
+            targetMaxAge: _targetMaxAge.toInt(),
+            lat: _lat,
+            lng: _lng,
           ));
       if (mounted) Navigator.pop(context);
     } catch (e) {
@@ -873,29 +954,34 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
       _EditField.bio: 'Edit About',
       _EditField.roleNatDioc: 'Role, Nationality & Diocese',
       _EditField.languages: 'Languages',
+      _EditField.location: 'Location & City',
+      _EditField.agePreferences: 'Matchmaking Age Preferences',
     };
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(24, 16, 24, 24 + bottom),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-              child: Container(
-                  width: 36,
-                  height: 4,
-                  decoration: BoxDecoration(
-                      color: Colors.black12,
-                      borderRadius: BorderRadius.circular(2)))),
-          const SizedBox(height: 16),
-          Text(titles[widget.field]!,
-              style: GoogleFonts.outfit(
-                  fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface)),
-          const SizedBox(height: 20),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(24, 16, 24, 24 + bottom),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+                child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                        color: Colors.black12,
+                        borderRadius: BorderRadius.circular(2)))),
+            const SizedBox(height: 16),
+            Text(titles[widget.field]!,
+                style: GoogleFonts.outfit(
+                    fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface)),
+            const SizedBox(height: 20),
 
           if (widget.field == _EditField.bio) ...[
             _inp(_nameCtrl, 'Display Name', Icons.person_outline),
+            const SizedBox(height: 12),
+            _inp(_ageCtrl, 'Age', Icons.calendar_today_outlined),
             const SizedBox(height: 12),
             TextField(
               controller: _bioCtrl,
@@ -910,12 +996,12 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
             const SizedBox(height: 8),
             Row(children: [
               _RoleToggle(
-                  label: 'Pilgrim 🙏',
+                  label: 'Pilgrim',
                   selected: _role == 'pilgrim',
                   onTap: () => setState(() => _role = 'pilgrim')),
               const SizedBox(width: 10),
               _RoleToggle(
-                  label: 'Volunteer 🤝',
+                  label: 'Volunteer',
                   selected: _role == 'volunteer',
                   onTap: () => setState(() => _role = 'volunteer')),
             ]),
@@ -1042,6 +1128,53 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
             ),
           ],
 
+          if (widget.field == _EditField.location) ...[
+            _inp(_cityCtrl, 'Chosen City', Icons.location_city),
+            const SizedBox(height: 16),
+            if (kIsWeb)
+              Center(
+                child: Column(
+                  children: [
+                    if (false) // Disabled direct dart:html geolocation
+                    OutlinedButton.icon(
+                      onPressed: () {},
+                      icon: const Icon(Icons.my_location, size: 16),
+                      label: const Text('Refresh Precise Location (Web Only)'),
+                    ),
+                    if (_lat != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(
+                          'Coordinates: ${_lat!.toStringAsFixed(4)}, ${_lng!.toStringAsFixed(4)}',
+                          style: const TextStyle(fontSize: 11, color: Colors.green),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+          ],
+
+          if (widget.field == _EditField.agePreferences) ...[
+            Text('Looking for pilgrims between ${_targetMinAge.toInt()} and ${_targetMaxAge.toInt()}', style: const TextStyle(color: Colors.black87, fontSize: 14)),
+            const SizedBox(height: 24),
+            RangeSlider(
+              values: RangeValues(_targetMinAge, _targetMaxAge),
+              min: 18,
+              max: 100,
+              divisions: 82,
+              labels: RangeLabels('${_targetMinAge.toInt()}', '${_targetMaxAge.toInt()}'),
+              activeColor: Theme.of(context).colorScheme.secondary,
+              inactiveColor: Colors.black12,
+              onChanged: (RangeValues values) {
+                setState(() {
+                  _targetMinAge = values.start;
+                  _targetMaxAge = values.end;
+                });
+              },
+            ),
+            const SizedBox(height: 16),
+          ],
+
           const SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
@@ -1067,8 +1200,9 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _inp(TextEditingController c, String hint, IconData icon) =>
       TextField(

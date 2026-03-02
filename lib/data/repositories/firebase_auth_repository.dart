@@ -117,6 +117,8 @@ class FirebaseAuthRepository implements AuthRepository {
         'events': <String>[],
         'nationality': '',
         'isOnboarded': false,
+        'isAdmin': false,
+        'isBanned': false,
         'createdAt': FieldValue.serverTimestamp(),
       });
     }

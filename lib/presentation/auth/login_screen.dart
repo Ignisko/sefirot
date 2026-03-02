@@ -468,22 +468,26 @@ class _AuthCard extends StatelessWidget {
                                               text:
                                                   'Already have an account?  '),
                                           TextSpan(
-                                              text: 'Log in →',
+                                              text: 'Log in',
                                               style: TextStyle(
                                                   color: Theme.of(context).colorScheme.secondary,
                                                   fontWeight:
                                                       FontWeight.bold)),
+                                          const WidgetSpan(child: SizedBox(width: 4)),
+                                          WidgetSpan(child: Icon(Icons.login_rounded, size: 14, color: Theme.of(context).colorScheme.secondary)),
                                         ]
                                       : [
                                           const TextSpan(
                                               text:
                                                   "Don't have an account?  "),
                                           TextSpan(
-                                              text: 'Sign up →',
+                                              text: 'Sign up',
                                               style: TextStyle(
                                                   color: Theme.of(context).colorScheme.secondary,
                                                   fontWeight:
                                                       FontWeight.bold)),
+                                          const WidgetSpan(child: SizedBox(width: 4)),
+                                          WidgetSpan(child: Icon(Icons.person_add_rounded, size: 14, color: Theme.of(context).colorScheme.secondary)),
                                         ],
                                 ),
                               ),
@@ -637,42 +641,49 @@ class _FishCrossState extends State<_FishCross>
     _ctrl.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      const Text('built with faith  ',
-          style:
-              TextStyle(fontSize: 11, color: Colors.black26)),
-      GestureDetector(
-        onTap: () {
-          _ctrl.forward(from: 0);
-          Future.delayed(const Duration(milliseconds: 175),
-              () {
-            if (mounted) setState(() => _isCross = !_isCross);
-          });
-        },
-        child: AnimatedBuilder(
-          animation: _jump,
-          builder: (_, child) => Transform.translate(
-              offset: Offset(0, _jump.value), child: child),
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            child: Text(
-              _isCross ? '✝' : ">((('>",
-              key: ValueKey(_isCross),
-              style: TextStyle(
-                  fontSize: 15,
-                  color: _isCross
-                      ? const Color(0xFF8B4513)
-                      : Colors.black26,
-                  fontWeight: _isCross
-                      ? FontWeight.bold
-                      : FontWeight.normal),
-            ),
-          ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextButton(onPressed: () {}, child: Text('Terms', style: TextStyle(fontSize: 11, color: Colors.black26))),
+            const Text('•', style: TextStyle(color: Colors.black12, fontSize: 10)),
+            TextButton(onPressed: () {}, child: Text('Privacy', style: TextStyle(fontSize: 11, color: Colors.black26))),
+          ],
         ),
-      ),
-    ]);
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('built with faith  ',
+                style: TextStyle(fontSize: 11, color: Colors.black26)),
+            GestureDetector(
+              onTap: () {
+                _ctrl.forward(from: 0);
+                Future.delayed(const Duration(milliseconds: 175), () {
+                  if (mounted) setState(() => _isCross = !_isCross);
+                });
+              },
+              child: AnimatedBuilder(
+                animation: _jump,
+                builder: (_, child) => Transform.translate(
+                    offset: Offset(0, _jump.value), child: child),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  child: _isCross
+                      ? const Text('✝️', key: ValueKey('cross'), style: TextStyle(fontSize: 16))
+                      : const Icon(Icons.set_meal_outlined, // Better than text for fish
+                          key: ValueKey('fish'),
+                          size: 16,
+                          color: Colors.black26),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }

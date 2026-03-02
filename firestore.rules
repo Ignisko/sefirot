@@ -27,18 +27,39 @@ service cloud.firestore {
     }
 
     match /reports/{reportId} {
-      // Admins can read and write all reports
       allow read, write: if isAdmin();
-
-      // Users can create a report if they are the reporter
       allow create: if isSignedIn() && request.resource.data.reporterUid == request.auth.uid;
+    }
+
+    match /match_preferences/{uid} {
+      allow read, write: if isSignedIn() && request.auth.uid == uid;
+    }
+
+    match /connections/{connectionId} {
+      allow read: if isSignedIn() && (resource == null || request.auth.uid in resource.data.userIds);
+      allow create: if isSignedIn() && request.auth.uid in request.resource.data.userIds;
+      allow update: if isSignedIn() && request.auth.uid in resource.data.userIds;
+      allow delete: if isAdmin();
+    }
+
+    // 🕊️ Pax — lightweight "peace greeting" sent between pilgrims
+    match /paxes/{paxId} {
+      allow read: if isSignedIn() && (
+        resource == null ||
+        request.auth.uid == resource.data.fromUid ||
+        request.auth.uid == resource.data.toUid
+      );
+      allow create: if isSignedIn() && request.resource.data.fromUid == request.auth.uid;
+      allow delete: if isSignedIn() && request.auth.uid == resource.data.fromUid;
     }
     
     // Chats
     match /chats/{chatId} {
-      // Participants can read and update, but NOT delete the chat document
-      allow read, update: if isSignedIn() && request.auth.uid in resource.data.participants;
+      // Allow reading even non-existent docs (needed to check existence before creating)
+      allow read: if isSignedIn() && (resource == null || request.auth.uid in resource.data.participants);
       allow create: if isSignedIn() && request.auth.uid in request.resource.data.participants;
+      // Participants can update (last message etc.) but NOT delete
+      allow update: if isSignedIn() && request.auth.uid in resource.data.participants;
       
       match /messages/{messageId} {
         allow read: if isSignedIn() && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
@@ -51,6 +72,11 @@ service cloud.firestore {
 
     match /{document=**} {
       allow read, write: if false;
+    }
+    
+    // Allow collectionGroup query for rate-limiting (checking own sent messages)
+    match /{path=**}/messages/{messageId} {
+      allow read: if isSignedIn() && resource.data.senderUid == request.auth.uid;
     }
   }
 }

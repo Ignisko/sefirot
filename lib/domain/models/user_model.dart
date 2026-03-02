@@ -13,10 +13,16 @@ class UserModel {
   final DateTime? createdAt; // Can be null locally until fetched from Firestore
   final String nationality;
   final bool isOnboarded;
-  final bool isAdmin;
-  final bool isBanned;
   final List<String> blockedUids;
   final String diocese;
+  final String city;
+  final double? lat;
+  final double? lng;
+  final int? age;
+  final int? targetMinAge;
+  final int? targetMaxAge;
+  final bool isAdmin;
+  final bool isBanned;
 
   UserModel({
     required this.uid,
@@ -31,14 +37,20 @@ class UserModel {
     this.createdAt,
     this.nationality = '',
     this.isOnboarded = false,
-    this.isAdmin = false,
-    this.isBanned = false,
     this.blockedUids = const [],
     this.diocese = '',
+    this.city = '',
+    this.lat,
+    this.lng,
+    this.age,
+    this.targetMinAge = 18,
+    this.targetMaxAge = 100,
+    this.isAdmin = false,
+    this.isBanned = false,
   });
 
   // Convert UserModel to a Map (useful for Firestore)
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap({bool includeAdminFields = false}) {
     final map = <String, dynamic>{
       'uid': uid,
       'email': email,
@@ -51,11 +63,19 @@ class UserModel {
       'events': events,
       'nationality': nationality,
       'isOnboarded': isOnboarded,
-      'isAdmin': isAdmin,
-      'isBanned': isBanned,
       'blockedUids': blockedUids,
       'diocese': diocese,
+      'city': city,
+      'lat': lat,
+      'lng': lng,
+      'age': age,
+      'targetMinAge': targetMinAge,
+      'targetMaxAge': targetMaxAge,
     };
+    if (includeAdminFields) {
+      map['isAdmin'] = isAdmin;
+      map['isBanned'] = isBanned;
+    }
     if (createdAt != null) {
       map['createdAt'] = Timestamp.fromDate(createdAt!);
     }
@@ -76,10 +96,16 @@ class UserModel {
       events: List<String>.from(map['events'] ?? []),
       nationality: map['nationality'] ?? '',
       isOnboarded: map['isOnboarded'] ?? false,
-      isAdmin: map['isAdmin'] ?? false,
-      isBanned: map['isBanned'] ?? false,
       blockedUids: List<String>.from(map['blockedUids'] ?? []),
       diocese: map['diocese'] ?? '',
+      city: map['city'] ?? '',
+      lat: double.tryParse(map['lat']?.toString() ?? ''),
+      lng: double.tryParse(map['lng']?.toString() ?? ''),
+      age: int.tryParse(map['age']?.toString() ?? ''),
+      targetMinAge: int.tryParse(map['targetMinAge']?.toString() ?? '18') ?? 18,
+      targetMaxAge: int.tryParse(map['targetMaxAge']?.toString() ?? '100') ?? 100,
+      isAdmin: map['isAdmin'] ?? false,
+      isBanned: map['isBanned'] ?? false,
       createdAt: map['createdAt'] != null
           ? (map['createdAt'] is Timestamp
               ? (map['createdAt'] as Timestamp).toDate()
@@ -102,10 +128,16 @@ class UserModel {
     DateTime? createdAt,
     String? nationality,
     bool? isOnboarded,
-    bool? isAdmin,
-    bool? isBanned,
     List<String>? blockedUids,
     String? diocese,
+    String? city,
+    double? lat,
+    double? lng,
+    int? age,
+    int? targetMinAge,
+    int? targetMaxAge,
+    bool? isAdmin,
+    bool? isBanned,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -120,10 +152,16 @@ class UserModel {
       createdAt: createdAt ?? this.createdAt,
       nationality: nationality ?? this.nationality,
       isOnboarded: isOnboarded ?? this.isOnboarded,
-      isAdmin: isAdmin ?? this.isAdmin,
-      isBanned: isBanned ?? this.isBanned,
       blockedUids: blockedUids ?? this.blockedUids,
       diocese: diocese ?? this.diocese,
+      city: city ?? this.city,
+      lat: lat ?? this.lat,
+      lng: lng ?? this.lng,
+      age: age ?? this.age,
+      targetMinAge: targetMinAge ?? this.targetMinAge,
+      targetMaxAge: targetMaxAge ?? this.targetMaxAge,
+      isAdmin: isAdmin ?? this.isAdmin,
+      isBanned: isBanned ?? this.isBanned,
     );
   }
 }

@@ -1,12 +1,15 @@
+import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/providers/auth_provider.dart';
+import '../../core/providers/user_provider.dart';
 import '../../domain/models/user_model.dart';
 import '../../core/providers/matchmaking_provider.dart';
-
+import '../../core/providers/chat_provider.dart';
 import '../admin/user_actions_helper.dart';
+import '../chat/chat_screen.dart';
 
 // ── Palette ───────────────────────────────────────────────────────────────────
 
@@ -17,12 +20,60 @@ import '../admin/user_actions_helper.dart';
 
 const _border = Color(0x0F000000);
 
-// ── Provider ──────────────────────────────────────────────────────────────────
-final allUsersProvider = StreamProvider<List<UserModel>>((ref) {
-  return FirebaseFirestore.instance
+// Filtered provider: excludes banned, ghost (no bio), and the viewer themselves
+final allUsersProvider = StreamProvider.family<List<UserModel>, String>((ref, myUid) async* {
+  // 1. Fetch current user first to get their age and target age preferences
+  final myUserDoc = await FirebaseFirestore.instance.collection('users').doc(myUid).get();
+  if (!myUserDoc.exists) {
+    yield [];
+    return;
+  }
+  
+  final myUser = UserModel.fromMap(myUserDoc.data()!, myUserDoc.id);
+  final myAge = myUser.age ?? 0;
+  final myTargetMin = myUser.targetMinAge ?? 18;
+  final myTargetMax = myUser.targetMaxAge ?? 100;
+
+  // 2. Yield the filtered stream of peers
+  yield* FirebaseFirestore.instance
       .collection('users')
       .snapshots()
-      .map((s) => s.docs.map((d) => UserModel.fromMap(d.data(), d.id)).toList());
+      .map((s) {
+    debugPrint('[BROWSE] Fetched ${s.docs.length} raw docs from Firestore');
+    final all = s.docs.map((d) {
+      try {
+        return UserModel.fromMap(d.data(), d.id);
+      } catch (e) {
+        debugPrint('[BROWSE] Error parsing user ${d.id}: $e');
+        return null;
+      }
+    }).whereType<UserModel>().toList();
+    
+    final filtered = all
+        .where((u) => u.uid != myUid)                       // hide yourself
+        .where((u) => u.isBanned != true)                   // hide banned
+        .where((u) {
+          // Mutual Age Filtering
+          // 1. Peer's age must be within MY target range (ONLY if peer has set their age)
+          final peerAge = u.age ?? 0;
+          if (peerAge > 0) {
+            if (peerAge < myTargetMin || peerAge > myTargetMax) return false;
+          }
+          
+          // 2. MY age must be within PEER'S target range (ONLY if I have set my age)
+          final peerTargetMin = u.targetMinAge ?? 18;
+          final peerTargetMax = u.targetMaxAge ?? 100;
+          if (myAge > 0) {
+            if (myAge < peerTargetMin || myAge > peerTargetMax) return false;
+          }
+          
+          return true;
+        })
+        .toList();
+        
+    debugPrint('[BROWSE] After initial filters (self/banned/age): ${filtered.length}');
+    return filtered;
+  });
 });
 
 // ── Filter state ──────────────────────────────────────────────────────────────
@@ -31,25 +82,25 @@ class _Filters {
   final String intent;    // 'All' | 'Pilgrim' | 'Volunteer'
   final String language;  // '' = any
   final String country;   // '' = any
-  final bool verifiedOnly;
+  final String city;      // '' = any
 
   const _Filters({
     this.search = '',
     this.intent = 'All',
     this.language = '',
     this.country = '',
-    this.verifiedOnly = false,
+    this.city = '',
   });
 
   _Filters copyWith({
     String? search, String? intent, String? language,
-    String? country, bool? verifiedOnly,
+    String? country, String? city,
   }) => _Filters(
     search: search ?? this.search,
     intent: intent ?? this.intent,
     language: language ?? this.language,
     country: country ?? this.country,
-    verifiedOnly: verifiedOnly ?? this.verifiedOnly,
+    city: city ?? this.city,
   );
 }
 
@@ -78,32 +129,42 @@ class _BrowseScreenState extends ConsumerState<BrowseScreen> {
     );
   }
 
-  // ── Desktop: sidebar filters + 3-col grid ─────────────────────────────────
+  // ── Desktop: optional filter sidebar + grid ──────────────────────────────────
   Widget _wideLayout() {
+    final myUid = ref.watch(authRepositoryProvider).currentUser?.uid ?? '';
     return Row(children: [
-      // Filter sidebar
-      Container(
-        width: 236,
-        color: Theme.of(context).cardColor,
-        child: _FilterPanel(filters: _f, onChange: _setFilters),
+      // Collapsible filter sidebar
+      AnimatedSize(
+        duration: const Duration(milliseconds: 240),
+        curve: Curves.easeInOut,
+        child: _filtersOpen
+            ? Container(
+                width: 236,
+                color: Theme.of(context).cardColor,
+                child: _FilterPanel(filters: _f, onChange: _setFilters),
+              )
+            : const SizedBox.shrink(),
       ),
-      const VerticalDivider(width: 1, color: _border),
+      if (_filtersOpen)
+        const VerticalDivider(width: 1, color: _border),
       // Main content
       Expanded(
         child: Column(children: [
           _TopBar(
             filters: _f,
             onChange: _setFilters,
-            showFilterBtn: false,
+            showFilterBtn: true,
+            onFilterTap: _toggleFilters,
           ),
-          Expanded(child: _PilgrimGrid(filters: _f)),
+          Expanded(child: _PilgrimGrid(filters: _f, myUid: myUid)),
         ]),
       ),
     ]);
   }
 
-  // ── Mobile: top bar + vertical list ──────────────────────────────────────
+  // ── Mobile: top bar + vertical list ─────────────────────────────────────────
   Widget _narrowLayout() {
+    final myUid = ref.watch(authRepositoryProvider).currentUser?.uid ?? '';
     return Column(children: [
       _TopBar(
         filters: _f,
@@ -123,7 +184,7 @@ class _BrowseScreenState extends ConsumerState<BrowseScreen> {
             : const SizedBox.shrink(),
       ),
       const Divider(height: 1, color: _border),
-      Expanded(child: _PilgrimGrid(filters: _f, columns: 1)),
+      Expanded(child: _PilgrimGrid(filters: _f, columns: 1, myUid: myUid)),
     ]);
   }
 }
@@ -174,10 +235,7 @@ class _TopBarState extends State<_TopBar> {
               decoration: InputDecoration(
                 hintText: 'Search pilgrims...',
                 hintStyle: const TextStyle(color: Colors.black38, fontSize: 14),
-                prefixIcon: const Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Text('🔍', style: TextStyle(fontSize: 15)),
-                ),
+                prefixIcon: const Icon(Icons.search, size: 18, color: Colors.black38),
                 contentPadding: const EdgeInsets.symmetric(vertical: 0),
                 filled: true,
                 fillColor: Theme.of(context).colorScheme.surface,
@@ -198,7 +256,7 @@ class _TopBarState extends State<_TopBar> {
                 color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Center(child: Text('⚙️', style: TextStyle(fontSize: 18))),
+              child: const Center(child: Icon(Icons.tune, size: 20, color: Colors.black54)),
             ),
           ),
         ],
@@ -293,37 +351,14 @@ class _FilterPanel extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          // Verified only
+          // City
           _FilterSection(
-            label: 'Trust',
-            child: Row(children: [
-              GestureDetector(
-                onTap: () => onChange(
-                    filters.copyWith(verifiedOnly: !filters.verifiedOnly)),
-                child: Container(
-                  width: 36, height: 20,
-                  decoration: BoxDecoration(
-                    color: filters.verifiedOnly ? Theme.of(context).colorScheme.secondary : Colors.black12,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: AnimatedAlign(
-                    duration: const Duration(milliseconds: 180),
-                    alignment: filters.verifiedOnly
-                        ? Alignment.centerRight
-                        : Alignment.centerLeft,
-                    child: Container(
-                      width: 16, height: 16,
-                      margin: const EdgeInsets.symmetric(horizontal: 2),
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).cardColor, shape: BoxShape.circle),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Text('Verified only',
-                  style: TextStyle(fontSize: 12, color: Colors.black54)),
-            ]),
+            label: 'City',
+            child: _TextFilter(
+              value: filters.city,
+              hint: 'Any city',
+              onChanged: (v) => onChange(filters.copyWith(city: v)),
+            ),
           ),
 
           if (!compact) ...[ 
@@ -433,49 +468,88 @@ class _TextFilter extends StatelessWidget {
 class _PilgrimGrid extends ConsumerWidget {
   final _Filters filters;
   final int columns;
-  const _PilgrimGrid({required this.filters, this.columns = 3});
+  final String myUid;
+  const _PilgrimGrid({required this.filters, this.columns = 3, required this.myUid});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final usersAsync = ref.watch(allUsersProvider);
-    final myUid = ref.watch(authRepositoryProvider).currentUser?.uid ?? '';
+    final usersAsync = ref.watch(allUsersProvider(myUid));
+    final myUserAsync = ref.watch(currentUserModelProvider);
+    final myUser = myUserAsync.value;
+
+    // Watch chats to check for existing conversations
+    final chatsAsync = ref.watch(userChatsProvider(myUid));
+    final existingChatPeerUids = chatsAsync.value?.expand((c) {
+      return c.participants.where((p) => p != myUid);
+    }).where((uid) => uid.isNotEmpty).toSet() ?? {};
+
+    // Check if current user has a complete enough profile to connect
+    final myProfileComplete = myUser != null &&
+        myUser.bio.isNotEmpty &&
+        myUser.nationality.isNotEmpty;
 
     return usersAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(child: Text('Error: $e')),
       data: (all) {
-        final myUser = all.firstWhere((u) => u.uid == myUid, 
-          orElse: () => UserModel(uid: myUid, email: '', displayName: '', photoUrl: '', accountType: 'pilgrim', bio: '', interests: [], languages: [], events: [], isOnboarded: true));
         final q = filters.search.toLowerCase();
 
         final users = all.where((u) {
-          if (u.uid == myUid) return false;
-          // Filtering blocked users
-          if (myUser.blockedUids.contains(u.uid) || u.blockedUids.contains(myUid)) {
+          // Filter blocked users
+          if (myUser?.blockedUids.contains(u.uid) == true || u.blockedUids.contains(myUid)) {
+            debugPrint('[BROWSE] User ${u.uid} hidden because of block');
             return false;
           }
+          
           if (filters.intent != 'All' &&
               u.accountType.toLowerCase() != filters.intent.toLowerCase()) {
             return false;
           }
+          
           if (filters.language.isNotEmpty &&
               !u.languages.any((l) =>
                   l.toLowerCase().contains(filters.language.toLowerCase()))) {
             return false;
           }
+          
           if (filters.country.isNotEmpty &&
               !u.nationality.toLowerCase().contains(filters.country.toLowerCase())) {
             return false;
           }
+          
+          if (filters.city.isNotEmpty &&
+              !u.city.toLowerCase().contains(filters.city.toLowerCase())) {
+            return false;
+          }
+          
           if (q.isNotEmpty) {
             final match = u.displayName.toLowerCase().contains(q) ||
                 u.nationality.toLowerCase().contains(q) ||
+                u.city.toLowerCase().contains(q) ||
                 u.bio.toLowerCase().contains(q) ||
                 u.languages.any((l) => l.toLowerCase().contains(q));
             if (!match) return false;
           }
           return true;
         }).toList();
+        
+        debugPrint('[BROWSE] Final users to show: ${users.length}');
+
+        // ── Nearby Sorting ──────────────────────────────────────────
+        if (myUser?.lat != null && myUser?.lng != null) {
+          users.sort((a, b) {
+            final hasA = a.lat != null && a.lng != null;
+            final hasB = b.lat != null && b.lng != null;
+            
+            if (!hasA && hasB) return 1;
+            if (hasA && !hasB) return -1;
+            if (!hasA && !hasB) return 0;
+            
+            final distA = _dist(myUser!.lat!, myUser.lng!, a.lat!, a.lng!);
+            final distB = _dist(myUser.lat!, myUser.lng!, b.lat!, b.lng!);
+            return distA.compareTo(distB);
+          });
+        }
 
         if (users.isEmpty) {
           return _EmptyState();
@@ -493,9 +567,13 @@ class _PilgrimGrid extends ConsumerWidget {
             mainAxisSpacing: 16,
           ),
           itemCount: users.length,
-          itemBuilder: (ctx, i) => effectiveCols == 1
-              ? _PilgrimRowCard(user: users[i])
-              : _PilgrimGridCard(user: users[i]),
+          itemBuilder: (context, i) {
+            final user = users[i];
+            final hasChat = existingChatPeerUids.contains(user.uid);
+            return effectiveCols == 1
+              ? _PilgrimRowCard(user: user, myProfileComplete: myProfileComplete, myUid: myUid, myUser: myUser, hasChat: hasChat)
+              : _PilgrimGridCard(user: user, myProfileComplete: myProfileComplete, myUid: myUid, myUser: myUser, hasChat: hasChat);
+          },
         );
       },
     );
@@ -505,7 +583,11 @@ class _PilgrimGrid extends ConsumerWidget {
 // ── Grid card (desktop) ───────────────────────────────────────────────────────
 class _PilgrimGridCard extends StatelessWidget {
   final UserModel user;
-  const _PilgrimGridCard({required this.user});
+  final bool myProfileComplete;
+  final String myUid;
+  final UserModel? myUser;
+  final bool hasChat;
+  const _PilgrimGridCard({required this.user, this.myProfileComplete = true, this.myUid = '', this.myUser, this.hasChat = false});
 
   @override
   Widget build(BuildContext context) {
@@ -519,7 +601,7 @@ class _PilgrimGridCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(14),
       child: InkWell(
         borderRadius: BorderRadius.circular(14),
-        onTap: () => _showDetail(context, user),
+        onTap: () => showProfileDetail(context, user),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
@@ -559,20 +641,26 @@ class _PilgrimGridCard extends StatelessWidget {
                       // Name + badge
                       Row(children: [
                         Expanded(
-                          child: Text(name,
+                          child: Text(
+                              user.age != null ? '$name, ${user.age}' : name,
                               style: GoogleFonts.outfit(
                                   fontSize: 15, fontWeight: FontWeight.bold),
                               overflow: TextOverflow.ellipsis),
                         ),
+                        const SizedBox(width: 4),
                         _RolePill(isVolunteer: isVolunteer),
                       ]),
                       // Location
-                      if (user.nationality.isNotEmpty) ...[ 
+                      if (user.nationality.isNotEmpty || user.city.isNotEmpty) ...[ 
                         const SizedBox(height: 2),
-                        Text(user.nationality,
+                        Text(
+                            [user.city, user.nationality].where((s) => s.isNotEmpty).join(', '),
                             style: const TextStyle(
                                 fontSize: 12, color: Colors.black45)),
                       ],
+                      if (myUser?.lat != null && myUser?.lng != null && user.lat != null && user.lng != null)
+                        Text('${_dist(myUser!.lat!, myUser!.lng!, user.lat!, user.lng!).toStringAsFixed(1)} km away',
+                            style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold)),
                       // Bio
                       if (user.bio.isNotEmpty) ...[ 
                         const SizedBox(height: 6),
@@ -588,8 +676,14 @@ class _PilgrimGridCard extends StatelessWidget {
                         _LangPills(languages: user.languages),
                       ],
                       const Spacer(),
-                      // Connect button
-                      _ConnectButton(user: user, full: true),
+                      // Actions row: Pax + Connect
+                      Row(children: [
+                        if (myUid.isNotEmpty) ...[
+                          _PaxButton(myUid: myUid, toUid: user.uid),
+                          const SizedBox(width: 8),
+                        ],
+                        Expanded(child: _ConnectButton(user: user, full: true, myProfileComplete: myProfileComplete, hasChat: hasChat)),
+                      ]),
                     ],
                   ),
                 ),
@@ -605,7 +699,11 @@ class _PilgrimGridCard extends StatelessWidget {
 // ── Row card (mobile) ─────────────────────────────────────────────────────────
 class _PilgrimRowCard extends StatelessWidget {
   final UserModel user;
-  const _PilgrimRowCard({required this.user});
+  final bool myProfileComplete;
+  final String myUid;
+  final UserModel? myUser;
+  final bool hasChat;
+  const _PilgrimRowCard({required this.user, this.myProfileComplete = true, this.myUid = '', this.myUser, this.hasChat = false});
 
   @override
   Widget build(BuildContext context) {
@@ -619,7 +717,7 @@ class _PilgrimRowCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(14),
       child: InkWell(
         borderRadius: BorderRadius.circular(14),
-        onTap: () => _showDetail(context, user),
+        onTap: () => showProfileDetail(context, user),
         child: Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
@@ -654,17 +752,23 @@ class _PilgrimRowCard extends StatelessWidget {
                 children: [
                   Row(children: [
                     Expanded(
-                      child: Text(name,
+                      child: Text(
+                          user.age != null ? '$name, ${user.age}' : name,
                           style: GoogleFonts.outfit(
                               fontSize: 15, fontWeight: FontWeight.bold),
                           overflow: TextOverflow.ellipsis),
                     ),
+                    const SizedBox(width: 4),
                     _RolePill(isVolunteer: isVolunteer, small: true),
                   ]),
-                  if (user.nationality.isNotEmpty)
-                    Text(user.nationality,
+                  if (user.nationality.isNotEmpty || user.city.isNotEmpty)
+                    Text(
+                        [user.city, user.nationality].where((s) => s.isNotEmpty).join(', '),
                         style: const TextStyle(
                             fontSize: 12, color: Colors.black45)),
+                  if (myUser?.lat != null && myUser?.lng != null && user.lat != null && user.lng != null)
+                    Text('${_dist(myUser!.lat!, myUser!.lng!, user.lat!, user.lng!).toStringAsFixed(1)} km away',
+                        style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold)),
                   if (user.bio.isNotEmpty) ...[ 
                     const SizedBox(height: 3),
                     Text(user.bio,
@@ -682,8 +786,14 @@ class _PilgrimRowCard extends StatelessWidget {
             ),
             const SizedBox(width: 10),
 
-            // Connect
-            _ConnectButton(user: user),
+            // Pax + Connect
+            Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              if (myUid.isNotEmpty) ...[
+                _PaxButton(myUid: myUid, toUid: user.uid, small: true),
+                const SizedBox(height: 8),
+              ],
+              _ConnectButton(user: user, myProfileComplete: myProfileComplete, hasChat: hasChat),
+            ]),
           ]),
         ),
       ),
@@ -695,7 +805,9 @@ class _PilgrimRowCard extends StatelessWidget {
 class _ConnectButton extends StatelessWidget {
   final UserModel user;
   final bool full;
-  const _ConnectButton({required this.user, this.full = false});
+  final bool myProfileComplete;
+  final bool hasChat;
+  const _ConnectButton({required this.user, this.full = false, this.myProfileComplete = true, this.hasChat = false});
 
   @override
   Widget build(BuildContext context) {
@@ -703,16 +815,133 @@ class _ConnectButton extends StatelessWidget {
       width: full ? double.infinity : null,
       height: 34,
       child: ElevatedButton(
-        onPressed: () => _showMatchModal(context, user),
+        onPressed: () {
+          if (!myProfileComplete) {
+            showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                title: const Text('Complete your profile first'),
+                content: const Text(
+                  'To protect our community from spam, you need to add a bio and your nationality before connecting with other pilgrims.',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            );
+            return;
+          }
+          _showMatchModal(context, user);
+        },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).colorScheme.secondary,
+          backgroundColor: hasChat ? Colors.transparent : Theme.of(context).colorScheme.secondary,
           padding: EdgeInsets.symmetric(horizontal: full ? 0 : 14, vertical: 0),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+              side: hasChat ? BorderSide(color: Theme.of(context).colorScheme.secondary, width: 1.5) : BorderSide.none),
           elevation: 0,
         ),
-        child: Text('Connect',
+        child: Text(hasChat ? 'Message' : 'Connect',
             style: TextStyle(
-                color: Theme.of(context).cardColor, fontSize: 13, fontWeight: FontWeight.bold)),
+                color: hasChat ? Theme.of(context).colorScheme.secondary : Theme.of(context).cardColor, 
+                fontSize: 13, 
+                fontWeight: FontWeight.bold)),
+      ),
+    );
+  }
+}
+
+// ── 🕊️ Pax button — light "peace greeting" with no pressure ───────────────────
+// Called "Pax" (Latin: peace), the traditional Franciscan greeting "Pax et Bonum".
+// It's a soft signal of interest — less commitment than Connect.
+class _PaxButton extends ConsumerStatefulWidget {
+  final String myUid;
+  final String toUid;
+  final bool small; // row card vs grid card
+  const _PaxButton({required this.myUid, required this.toUid, this.small = false});
+
+  @override
+  ConsumerState<_PaxButton> createState() => _PaxButtonState();
+}
+
+class _PaxButtonState extends ConsumerState<_PaxButton>
+    with SingleTickerProviderStateMixin {
+  bool _sent = false;
+  late final AnimationController _scale;
+  late final Animation<double> _anim;
+
+  @override
+  void initState() {
+    super.initState();
+    _scale = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 180));
+    _anim = Tween<double>(begin: 1.0, end: 1.35)
+        .chain(CurveTween(curve: Curves.elasticOut))
+        .animate(_scale);
+    _checkExisting();
+  }
+
+  @override
+  void dispose() {
+    _scale.dispose();
+    super.dispose();
+  }
+
+  Future<void> _checkExisting() async {
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('paxes')
+          .doc('${widget.myUid}_${widget.toUid}')
+          .get();
+      if (mounted) setState(() => _sent = doc.exists);
+    } catch (_) {}
+  }
+
+  Future<void> _toggle() async {
+    final paxId = '${widget.myUid}_${widget.toUid}';
+    final ref = FirebaseFirestore.instance.collection('paxes').doc(paxId);
+    final wasSet = _sent;
+    setState(() => _sent = !_sent);
+    _scale.forward().then((_) => _scale.reverse());
+    try {
+      if (wasSet) {
+        await ref.delete();
+      } else {
+        await ref.set({
+          'fromUid': widget.myUid,
+          'toUid': widget.toUid,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+      }
+    } catch (e) {
+      if (mounted) setState(() => _sent = wasSet); // rollback on error
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = _sent
+        ? Theme.of(context).colorScheme.secondary
+        : Colors.black26;
+    return GestureDetector(
+      onTap: _toggle,
+      child: ScaleTransition(
+        scale: _anim,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.spa_outlined, color: color, size: widget.small ? 20 : 24),
+            const SizedBox(height: 2),
+            Text('Pax',
+                style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: color)),
+          ],
+        ),
       ),
     );
   }
@@ -812,7 +1041,7 @@ class _MatchDialogState extends ConsumerState<_MatchDialog> {
     final text = _msgCtrl.text.trim();
     if (text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please add a short message first 👀')),
+        const SnackBar(content: Text('Please add a short message first')),
       );
       return;
     }
@@ -822,28 +1051,27 @@ class _MatchDialogState extends ConsumerState<_MatchDialog> {
     if (myUid == null) return;
 
     final peerUid = widget.user.uid;
-    final sortedIds = [myUid, peerUid]..sort();
-    final chatId = sortedIds.join('_');
 
     try {
       final matchRepo = ref.read(matchmakingRepositoryProvider);
-      
-      // 1. Ensure chat exists
-      final chatRef = FirebaseFirestore.instance.collection('chats').doc(chatId);
-      final snap = await chatRef.get();
-      if (!snap.exists) {
-        await matchRepo.createChat([myUid, peerUid]);
-        _checkSpam(myUid);
-      }
 
-      // 2. Send message
+      // createChat uses merge:true — idempotent, safe to always call
+      await matchRepo.createChat([myUid, peerUid]);
+
+      // Send first message into the chat
+      final sortedIds = [myUid, peerUid]..sort();
+      final chatId = sortedIds.join('_');
       await matchRepo.sendMessage(chatId, myUid, text);
+
+      // Background spam check (don't await — don't block UX)
+      _checkSpam(myUid);
 
       if (mounted) {
         Navigator.pop(context);
+        Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen(peer: widget.user)));
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Message sent to ${_name(widget.user)} 🙏'),
+            content: Text('Message sent to ${_name(widget.user)}'),
             backgroundColor: Theme.of(context).colorScheme.secondary,
           ),
         );
@@ -890,8 +1118,17 @@ class _MatchDialogState extends ConsumerState<_MatchDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final myUid = ref.watch(authRepositoryProvider).currentUser?.uid;
     final name = _name(widget.user);
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+
+    bool hasChat = false;
+    if (myUid != null) {
+      final chatsAsync = ref.watch(userChatsProvider(myUid));
+      hasChat = chatsAsync.whenOrNull(
+        data: (chats) => chats.any((c) => c.participants.contains(widget.user.uid)),
+      ) ?? false;
+    }
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -906,8 +1143,7 @@ class _MatchDialogState extends ConsumerState<_MatchDialog> {
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 _ModalAvatar(user: widget.user),
                 const SizedBox(width: 12),
-                const Text('→',
-                    style: TextStyle(fontSize: 20, color: Colors.black26)),
+                Icon(Icons.arrow_forward_rounded, size: 20, color: Colors.black12),
                 const SizedBox(width: 12),
                 CircleAvatar(
                   radius: 28,
@@ -920,23 +1156,25 @@ class _MatchDialogState extends ConsumerState<_MatchDialog> {
                 ),
               ]),
               const SizedBox(height: 24),
-              Text('Connect with $name?',
+              Text(hasChat ? 'See message history' : 'Connect with $name?',
                   style: GoogleFonts.outfit(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.onSurface),
                   textAlign: TextAlign.center),
               const SizedBox(height: 8),
-              Text(
-                'Send $name a message.\\nThey\'ll be notified and can reply.',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                    fontSize: 13, color: Colors.black45, height: 1.5),
-              ),
-              const SizedBox(height: 24),
+              if (!hasChat)
+                Text(
+                  'Send $name a message.\\nThey\'ll be notified and can reply.',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      fontSize: 13, color: Colors.black45, height: 1.5),
+                ),
+              if (!hasChat) const SizedBox(height: 24),
 
               // Message Input
-              TextField(
+              if (!hasChat)
+                TextField(
                 controller: _msgCtrl,
                 maxLines: 3,
                 minLines: 2,
@@ -953,26 +1191,35 @@ class _MatchDialogState extends ConsumerState<_MatchDialog> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              if (!hasChat) const SizedBox(height: 16),
 
               // CTA
               SizedBox(
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: _sending ? null : _sendReq,
+                  onPressed: _sending 
+                    ? null 
+                    : () {
+                        if (hasChat) {
+                          Navigator.pop(context);
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen(peer: widget.user)));
+                        } else {
+                          _sendReq();
+                        }
+                      },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.secondary,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
                   ),
                   child: _sending
-                      ? SizedBox(
+                      ? const SizedBox(
                           width: 20,
                           height: 20,
                           child: CircularProgressIndicator(
-                              color: Theme.of(context).cardColor, strokeWidth: 2))
-                      : Text('Send request',
+                              strokeWidth: 2, color: Colors.white))
+                      : Text(hasChat ? 'Go to chat' : 'Send request',
                           style: TextStyle(
                               color: Theme.of(context).cardColor,
                               fontWeight: FontWeight.bold,
@@ -1017,23 +1264,28 @@ class _ModalAvatar extends StatelessWidget {
 }
 
 // ── Profile detail sheet ──────────────────────────────────────────────────────
-void _showDetail(BuildContext context, UserModel user) {
+void showProfileDetail(BuildContext context, UserModel user) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Theme.of(context).cardColor,
     shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-    builder: (_) => _DetailSheet(user: user),
+    builder: (_) => ProfileDetailSheet(user: user),
   );
 }
 
-class _DetailSheet extends ConsumerWidget {
+class ProfileDetailSheet extends ConsumerWidget {
   final UserModel user;
-  const _DetailSheet({required this.user});
+  const ProfileDetailSheet({required this.user});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final myUid = ref.watch(authRepositoryProvider).currentUser?.uid;
+    final chatsAsync = ref.watch(userChatsProvider(myUid ?? ''));
+    final hasChat = chatsAsync.whenOrNull(data: (chats) => 
+        chats.any((c) => c.participants.contains(user.uid))) ?? false;
+
     final name = _name(user);
     final initials = _initials(user);
     final isVol = user.accountType == 'volunteer';
@@ -1174,9 +1426,9 @@ class _DetailSheet extends ConsumerWidget {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
               ),
-              child: Text('Connect',
+              child: Text(hasChat ? 'Message' : 'Connect',
                   style: TextStyle(
-                      color: Theme.of(context).cardColor,
+                      color: hasChat ? Theme.of(context).colorScheme.secondary : Theme.of(context).cardColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 15)),
             ),
@@ -1212,7 +1464,7 @@ class _EmptyState extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(40),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Text('🌍', style: TextStyle(fontSize: 52)),
+            Icon(Icons.public_rounded, size: 52, color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)),
           const SizedBox(height: 16),
           Text('No pilgrims found',
               style: GoogleFonts.outfit(
@@ -1242,3 +1494,15 @@ String _initials(UserModel u) {
   }
   return u.email[0].toUpperCase();
 }
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+  var p = 0.017453292519943295;
+  var c = math.cos;
+  var a = 0.5 - c((lat2 - lat1) * p)/2 + 
+      c(lat1 * p) * c(lat2 * p) * 
+      (1 - c((lon2 - lon1) * p))/2;
+  return (12742 * math.asin(math.sqrt(a))).toDouble();
+}
+
+double _dist(double lat1, double lon1, double lat2, double lon2) => _calculateDistance(lat1, lon1, lat2, lon2);

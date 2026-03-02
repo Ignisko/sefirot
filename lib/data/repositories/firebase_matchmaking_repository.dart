@@ -123,11 +123,19 @@ class FirebaseMatchmakingRepository implements MatchmakingRepository {
 
     // 2. Update chat metadata
     final chatRef = _firestore.collection('chats').doc(chatId);
-    batch.update(chatRef, {
+    final parts = chatId.split('_');
+    final peerId = parts.firstWhere((p) => p != senderId, orElse: () => '');
+    
+    final updates = {
       'lastMessage': text,
       'lastTimestamp': FieldValue.serverTimestamp(),
-      'lastMessageSeenBy': { senderId: true }, // The sender has seen it, others have not
-    });
+      'lastMessageSeenBy.$senderId': true,
+    };
+    if (peerId.isNotEmpty) {
+      updates['lastMessageSeenBy.$peerId'] = false;
+    }
+    
+    batch.update(chatRef, updates);
 
     await batch.commit();
   }
