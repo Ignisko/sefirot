@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:path/path.dart' as p;
+import 'package:geolocator/geolocator.dart';
 
 import '../../core/providers/auth_provider.dart';
 import '../../core/providers/user_provider.dart';
@@ -563,13 +564,6 @@ class _ProfileContent extends ConsumerWidget {
           const SizedBox(height: 24),
 
           // ── Stats row ─────────────────────────────────────────────
-          Row(children: const [
-            _StatCard(label: 'Connections', value: '0', icon: Icons.handshake_outlined),
-            SizedBox(width: 12),
-            _StatCard(label: 'Messages', value: '0', icon: Icons.chat_bubble_outline_rounded),
-            SizedBox(width: 12),
-            _StatCard(label: 'Matches', value: '0', icon: Icons.auto_awesome_outlined),
-          ]),
         ],
       ),
     );
@@ -824,42 +818,6 @@ class _Badge extends StatelessWidget {
   }
 }
 
-// ── Stat card ─────────────────────────────────────────────────────────────────
-class _StatCard extends StatelessWidget {
-  final String label, value;
-  final IconData icon;
-  const _StatCard({required this.label, required this.value, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(12),
-          border:
-              Border.all(color: Colors.black.withValues(alpha: 0.06)),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5)),
-            const SizedBox(height: 4),
-            Text(value,
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onSurface)),
-            const SizedBox(height: 2),
-            Text(label,
-                style: const TextStyle(
-                    fontSize: 10, color: Colors.black38)),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 // ── Edit field enum + bottom sheet ───────────────────────────────────────────
 enum _EditField { bio, roleNatDioc, languages, location, agePreferences }
@@ -1131,16 +1089,26 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
           if (widget.field == _EditField.location) ...[
             _inp(_cityCtrl, 'Chosen City', Icons.location_city),
             const SizedBox(height: 16),
-            if (kIsWeb)
-              Center(
-                child: Column(
-                  children: [
-                    if (false) // Disabled direct dart:html geolocation
-                    OutlinedButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(Icons.my_location, size: 16),
-                      label: const Text('Refresh Precise Location (Web Only)'),
-                    ),
+            Center(
+              child: Column(
+                children: [
+                  OutlinedButton.icon(
+                    onPressed: () async {
+                      LocationPermission perm = await Geolocator.checkPermission();
+                      if (perm == LocationPermission.denied) {
+                        perm = await Geolocator.requestPermission();
+                      }
+                      if (perm == LocationPermission.whileInUse || perm == LocationPermission.always) {
+                        final pos = await Geolocator.getCurrentPosition();
+                        setState(() {
+                          _lat = pos.latitude;
+                          _lng = pos.longitude;
+                        });
+                      }
+                    },
+                    icon: const Icon(Icons.my_location, size: 16),
+                    label: const Text('Refresh Precise Location'),
+                  ),
                     if (_lat != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 8),

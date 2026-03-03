@@ -24,15 +24,16 @@ const _border = Color(0x0F000000);
 final allUsersProvider = StreamProvider.family<List<UserModel>, String>((ref, myUid) async* {
   // 1. Fetch current user first to get their age and target age preferences
   final myUserDoc = await FirebaseFirestore.instance.collection('users').doc(myUid).get();
-  if (!myUserDoc.exists) {
-    yield [];
-    return;
+  
+  UserModel? myUser;
+  if (myUserDoc.exists && myUserDoc.data() != null) {
+      myUser = UserModel.fromMap(myUserDoc.data()!, myUserDoc.id);
   }
   
-  final myUser = UserModel.fromMap(myUserDoc.data()!, myUserDoc.id);
-  final myAge = myUser.age ?? 0;
-  final myTargetMin = myUser.targetMinAge ?? 18;
-  final myTargetMax = myUser.targetMaxAge ?? 100;
+  final myAge = myUser?.age ?? 0;
+  final myTargetMin = myUser?.targetMinAge ?? 18;
+  final myTargetMax = myUser?.targetMaxAge ?? 100;
+  final isAdminOrIggy = myUser?.isAdmin == true || myUser?.email == 'ignacyjanszek@gmail.com';
 
   // 2. Yield the filtered stream of peers
   yield* FirebaseFirestore.instance
@@ -53,6 +54,10 @@ final allUsersProvider = StreamProvider.family<List<UserModel>, String>((ref, my
         .where((u) => u.uid != myUid)                       // hide yourself
         .where((u) => u.isBanned != true)                   // hide banned
         .where((u) {
+          if (!isAdminOrIggy && u.displayName.toLowerCase().contains('test')) {
+             return false;
+          }
+
           // Mutual Age Filtering
           // 1. Peer's age must be within MY target range (ONLY if peer has set their age)
           final peerAge = u.age ?? 0;
