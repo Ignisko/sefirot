@@ -156,6 +156,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTap: () => showProfileDetail(context, widget.peer),
           child: Row(
             children: [

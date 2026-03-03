@@ -835,6 +835,7 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
   late TextEditingController _nameCtrl;
   late TextEditingController _bioCtrl;
   late TextEditingController _countrySearch;
+  late TextEditingController _langSearch;
   late String _role;
   late String _nationality;
   late String _diocese;
@@ -853,6 +854,7 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
     _nameCtrl = TextEditingController(text: widget.user.displayName);
     _bioCtrl = TextEditingController(text: widget.user.bio);
     _countrySearch = TextEditingController();
+    _langSearch = TextEditingController();
     _role = widget.user.accountType;
     _nationality = widget.user.nationality;
     _diocese = widget.user.diocese;
@@ -873,6 +875,7 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
     _nameCtrl.dispose();
     _bioCtrl.dispose();
     _countrySearch.dispose();
+    _langSearch.dispose();
     _cityCtrl.dispose();
     _ageCtrl.dispose();
     super.dispose();
@@ -1048,14 +1051,22 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
                   color: _langs.length >= 7 ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.secondary),
             ]),
             const SizedBox(height: 12),
+            TextField(
+                controller: _langSearch,
+                decoration: _dec('Search language...')
+                    .copyWith(prefixIcon: const Icon(Icons.search, size: 18, color: Colors.black38)),
+                onChanged: (_) => setState(() {})),
+            const SizedBox(height: 12),
             SizedBox(
               height: 200,
               child: SingleChildScrollView(
                 child: Wrap(
                   spacing: 8,
                   runSpacing: 8,
-                  children: _languages.map((lang) {
-                    final sel = _langs.contains(lang);
+                  children: globalLanguages
+                      .where((l) => l.toLowerCase().contains(_langSearch.text.toLowerCase()))
+                      .map((lang) {
+                    final sel = _langs.contains(lang) || _langs.any((oldL) => lang.startsWith('$oldL ('));
                     final disabled = !sel && _langs.length >= 7;
                     return FilterChip(
                       label: Text(lang,
@@ -1073,7 +1084,12 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
                       onSelected: disabled
                           ? null
                           : (_) => setState(() {
-                                sel ? _langs.remove(lang) : _langs.add(lang);
+                                if (sel) {
+                                  _langs.remove(lang);
+                                  _langs.removeWhere((oldL) => lang.startsWith('$oldL ('));
+                                } else {
+                                  _langs.add(lang);
+                                }
                               }),
                       selectedColor: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.12),
                       checkmarkColor: Theme.of(context).colorScheme.secondary,
