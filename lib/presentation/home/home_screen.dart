@@ -1,6 +1,7 @@
 // Removed dart:html to fix Windows build crash
 import 'dart:io';
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,13 +11,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:path/path.dart' as p;
-import 'package:geolocator/geolocator.dart';
+import '../../core/services/location_service.dart';
 
 import '../../core/providers/auth_provider.dart';
 import '../../core/providers/user_provider.dart';
 import '../../core/constants/languages.dart';
 import '../../core/constants/countries.dart';
-import '../admin/user_actions_helper.dart';
+
 import '../../domain/models/user_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -27,10 +28,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 
 
-// ── Country list ─────────────────────────────────────────────────────────────
+// ── Firebase Storage bucket ──────────────────────────────────────────────────
+const _storageBucket = 'sefirot-ff9af.firebasestorage.app';
+
+// ── Country list ──────────────────────────────────────────────────
 final List<String> _countries = globalCountries;
 
-final List<String> _languages = globalLanguages;
 
 const _dioceses = [
   'Archdiocese of Seoul',
@@ -57,9 +60,6 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userAsync = ref.watch(currentUserModelProvider);
-    final isAdmin = userAsync.value?.isAdmin ?? false;
-
     // Banned state and Onboarding state are now handled securely by GoRouter in app_router.dart
 
     final w = MediaQuery.of(context).size.width;
@@ -68,7 +68,6 @@ class HomeScreen extends ConsumerWidget {
     if (isWide) {
       return _DesktopShell(
         navigationShell: navigationShell,
-        isAdmin: isAdmin,
       );
     }
 
@@ -79,7 +78,6 @@ class HomeScreen extends ConsumerWidget {
       const NavigationDestination(icon: Icon(Icons.chat_bubble_outline), selectedIcon: Icon(Icons.chat_bubble), label: 'Messages'),
       const NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Profile'),
       const NavigationDestination(icon: Icon(Icons.info_outline), selectedIcon: Icon(Icons.info), label: 'About'),
-      if (isAdmin) const NavigationDestination(icon: Icon(Icons.admin_panel_settings_outlined), selectedIcon: Icon(Icons.admin_panel_settings), label: 'Admin'),
     ];
 
     return Scaffold(
@@ -104,8 +102,7 @@ class HomeScreen extends ConsumerWidget {
 // ── Desktop Shell (sidebar layout) ───────────────────────────────────────────
 class _DesktopShell extends ConsumerWidget {
   final StatefulNavigationShell navigationShell;
-  final bool isAdmin;
-  const _DesktopShell({required this.navigationShell, required this.isAdmin});
+  const _DesktopShell({required this.navigationShell});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -129,7 +126,6 @@ class _DesktopShell extends ConsumerWidget {
                         i,
                         initialLocation: i == navigationShell.currentIndex,
                       ),
-                      isAdmin: isAdmin,
                     ),
               loading: () =>
                   const Center(child: CircularProgressIndicator()),
@@ -155,8 +151,7 @@ class _Sidebar extends ConsumerWidget {
   final UserModel user;
   final int currentTab;
   final ValueChanged<int> onTabChange;
-  final bool isAdmin;
-  const _Sidebar({required this.user, required this.currentTab, required this.onTabChange, required this.isAdmin});
+  const _Sidebar({required this.user, required this.currentTab, required this.onTabChange});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -248,17 +243,6 @@ class _Sidebar extends ConsumerWidget {
             icon: Icons.info_outline,
             selected: currentTab == 4,
             onTap: () => onTabChange(4)),
-        _NavItem(
-            label: 'Admin',
-            icon: Icons.admin_panel_settings_outlined,
-            selected: false, // It's an external link now
-            onTap: () async {
-               // Open flareline admin externally
-               final url = Uri.parse('https://sefirot-admin.vercel.app'); 
-               if (await canLaunchUrl(url)) {
-                 await launchUrl(url);
-               }
-            }),
 
         const Spacer(),
       ],
@@ -319,54 +303,6 @@ class _NavItem extends StatelessWidget {
   }
 }
 
-class _CheckItem extends StatelessWidget {
-  final String label;
-  final bool done;
-  final VoidCallback? onTap;
-  const _CheckItem({required this.label, required this.done, this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(4),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
-        child: Row(
-          children: [
-            Container(
-              width: 14, height: 14,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: done ? Theme.of(context).colorScheme.secondary : Colors.transparent,
-                border: Border.all(
-                    color: done ? Theme.of(context).colorScheme.secondary : Colors.black26, width: 1.5),
-              ),
-              child: done
-                  ? Center(
-                      child: Icon(Icons.check,
-                          color: Theme.of(context).cardColor, size: 10,
-                          weight: 900))
-                  : null,
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(label,
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: done ? Colors.black45 : Theme.of(context).colorScheme.secondary,
-                      fontWeight: done ? FontWeight.normal : FontWeight.w600,
-                      decoration: done ? TextDecoration.lineThrough : null)),
-            ),
-            if (!done)
-               const Icon(Icons.arrow_forward_ios, size: 8, color: Colors.black26),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 // ── Profile Pane ──────────────────────────────────────────────────────────────
 class ProfilePane extends ConsumerWidget {
   const ProfilePane({super.key});
@@ -416,82 +352,51 @@ class _ProfileContent extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Header card ──────────────────────────────────────────
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
-            ),
-            child: Row(
+          // Header
+          Center(
+            child: Column(
               children: [
                 _BigAvatar(user: user),
-                const SizedBox(width: 20),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user.displayName.isNotEmpty
-                            ? user.displayName
-                            : user.email.split('@').first,
-                        style: GoogleFonts.outfit(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.onSurface),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          _Badge(
-                              label: user.accountType == 'volunteer'
-                                  ? 'Volunteer'
-                                  : 'Pilgrim',
-                              color: user.accountType == 'volunteer'
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Theme.of(context).colorScheme.secondary),
-                          if (user.nationality.isNotEmpty) ...[
-                            const SizedBox(width: 8),
-                            Text('· ${user.nationality}',
-                                style: const TextStyle(
-                                    fontSize: 13, color: Colors.black45)),
-                          ],
-                        ],
-                      ),
-                      if (user.bio.isNotEmpty) ...[
-                        const SizedBox(height: 10),
-                        Text(user.bio,
-                            style: const TextStyle(
-                                fontSize: 13,
-                                color: Colors.black54,
-                                height: 1.4)),
-                      ],
-                    ],
-                  ),
+                const SizedBox(height: 16),
+                Text(
+                  user.displayName.isNotEmpty
+                      ? user.displayName
+                      : user.email.split('@').first,
+                  style: GoogleFonts.outfit(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  user.email,
+                  style: const TextStyle(fontSize: 14, color: Colors.black45),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 40),
 
-          // ── Edit sections ─────────────────────────────────────────
+          // ── EDIT PROFILE SECTION ─────────────────────────────────
+          Text('EDIT PROFILE',
+              style: GoogleFonts.outfit(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.2,
+                  color: Colors.black38)),
+          const SizedBox(height: 16),
           _EditCard(
-            title: 'About',
+            title: 'ABOUT ME',
             onEdit: () => _openEdit(context, user, _EditField.bio),
-            child: user.bio.isNotEmpty
-                ? Text(user.bio,
-                    style: const TextStyle(
-                        color: Colors.black87, fontSize: 14, height: 1.5))
-                : const Text('Add a bio to help pilgrims find you...',
-                    style: TextStyle(color: Colors.black38, fontSize: 14)),
+            child: Text(
+              user.bio.isEmpty ? 'No bio yet. Tap to add one!' : user.bio,
+              style: const TextStyle(fontSize: 14, color: Colors.black87, height: 1.4),
+            ),
           ),
           const SizedBox(height: 12),
           _EditCard(
-            title: 'Role, Nationality & Diocese',
-            onEdit: () =>
-                _openEdit(context, user, _EditField.roleNatDioc),
+            title: 'ROLE & DIOCESE',
+            onEdit: () => _openEdit(context, user, _EditField.roleNatDioc),
             child: Wrap(
               spacing: 8,
               runSpacing: 6,
@@ -510,7 +415,7 @@ class _ProfileContent extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           _EditCard(
-            title: 'Languages',
+            title: 'LANGUAGES',
             onEdit: () => _openEdit(context, user, _EditField.languages),
             child: user.languages.isEmpty
                 ? const Text('Add languages you speak...',
@@ -525,7 +430,7 @@ class _ProfileContent extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           _EditCard(
-            title: 'Location & City',
+            title: 'LOCATION',
             onEdit: () => _openEdit(context, user, _EditField.location),
             child: Row(
               children: [
@@ -544,9 +449,18 @@ class _ProfileContent extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 40),
+
+          // ── SETTINGS SECTION ─────────────────────────────────────
+          Text('PREFERENCES',
+              style: GoogleFonts.outfit(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.2,
+                  color: Colors.black38)),
+          const SizedBox(height: 16),
           _EditCard(
-            title: 'Matchmaking Age Preferences',
+            title: 'AGE PREFERENCES',
             onEdit: () => _openEdit(context, user, _EditField.agePreferences),
             child: Row(
               children: [
@@ -561,12 +475,128 @@ class _ProfileContent extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: 24),
-
-          // ── Stats row ─────────────────────────────────────────────
+          
+          const SizedBox(height: 32),
+          Text('SETTINGS',
+              style: GoogleFonts.outfit(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.2,
+                  color: Colors.black38)),
+          const SizedBox(height: 16),
+          
+          // Footer Links
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () => launchUrl(Uri.parse('https://pelegrin.cloud/terms'), mode: LaunchMode.externalApplication),
+                child: const Text('Terms', style: TextStyle(fontSize: 13, color: Colors.black45)),
+              ),
+              const Text('•', style: TextStyle(color: Colors.black12)),
+              TextButton(
+                onPressed: () => launchUrl(Uri.parse('https://pelegrin.cloud/privacy'), mode: LaunchMode.externalApplication),
+                child: const Text('Privacy', style: TextStyle(fontSize: 13, color: Colors.black45)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          
+          // Delete Account Link
+          Center(
+            child: TextButton(
+              onPressed: () => _confirmDeleteAccount(context, ref, user),
+              child: const Text(
+                'Delete Account',
+                style: TextStyle(
+                  color: Colors.redAccent,
+                  fontSize: 13,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 40),
         ],
       ),
     );
+  }
+
+  Future<void> _confirmDeleteAccount(BuildContext ctx, WidgetRef ref, UserModel user) async {
+    final deleteCtrl = TextEditingController();
+    final confirmed = await showDialog<bool>(
+      context: ctx,
+      builder: (c) => AlertDialog(
+        title: const Text('Delete Account?', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'This action is PERMANENT and cannot be undone.',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              '• Your profile will be erased\n• Your messages will be deleted\n• Your matches will be removed',
+              style: TextStyle(fontSize: 13, color: Colors.black54),
+            ),
+            const SizedBox(height: 20),
+            const Text('Please type "DELETE" below to confirm:', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: deleteCtrl,
+              decoration: InputDecoration(
+                hintText: 'DELETE',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              ),
+              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Cancel')),
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: deleteCtrl,
+            builder: (context, value, child) {
+              final isMatch = value.text.trim().toUpperCase() == 'DELETE';
+              return TextButton(
+                onPressed: isMatch ? () => Navigator.pop(c, true) : null,
+                child: Text('Delete Permanently', 
+                  style: TextStyle(
+                    color: isMatch ? Colors.red : Colors.grey, 
+                    fontWeight: FontWeight.bold
+                  )
+                ),
+              );
+            }
+          ),
+        ],
+      ),
+    );
+    
+    deleteCtrl.dispose();
+    if (confirmed != true) return;
+    try {
+      // 1. Delete avatar from Firebase Storage (best effort)
+      try {
+        await FirebaseStorage.instance.ref('avatars/${user.uid}').delete();
+      } catch (_) {
+        // Avatar may not exist — ignore storage errors
+      }
+      // 2. Delete Firestore user doc
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).delete();
+      // 3. Delete Firebase Auth account
+      await FirebaseAuth.instance.currentUser?.delete();
+      // Note: chat records and messages require a Cloud Function for full cascade deletion.
+    } catch (e) {
+      if (ctx.mounted) {
+        ScaffoldMessenger.of(ctx).showSnackBar(
+          SnackBar(content: Text('Deletion failed: $e. Please re-login and try again.'), backgroundColor: Colors.red),
+        );
+      }
+    }
   }
 
   void _openEdit(BuildContext ctx, UserModel user, _EditField field) {
@@ -618,27 +648,31 @@ class _BigAvatarState extends ConsumerState<_BigAvatar> {
       if (!kIsWeb && Platform.isWindows) {
         // Use REST API on Windows to avoid firebase_storage C++ SDK crash
         final token = await FirebaseAuth.instance.currentUser?.getIdToken();
-        final bucket = 'sefirot-ff9af.firebasestorage.app';
+        final bucket = _storageBucket;
         final path = Uri.encodeComponent('avatars/${widget.user.uid}');
         final restUrl = Uri.parse('https://firebasestorage.googleapis.com/v0/b/$bucket/o?name=$path');
-        
+
         final client = HttpClient();
-        final request = await client.postUrl(restUrl);
-        if (token != null) {
-           request.headers.set('Authorization', 'Bearer $token');
-        }
-        request.headers.set('Content-Type', mimeType);
-        request.add(uploadBytes);
-        
-        final response = await request.close();
-        final responseString = await response.transform(utf8.decoder).join();
-        
-        if (response.statusCode == 200) {
-          final js = jsonDecode(responseString);
-          final downloadToken = js['downloadTokens'];
-          url = 'https://firebasestorage.googleapis.com/v0/b/$bucket/o/$path?alt=media&token=$downloadToken';
-        } else {
-          throw Exception('Upload failed: ${response.statusCode} $responseString');
+        try {
+          final request = await client.postUrl(restUrl);
+          if (token != null) {
+            request.headers.set('Authorization', 'Bearer $token');
+          }
+          request.headers.set('Content-Type', mimeType);
+          request.add(uploadBytes);
+
+          final response = await request.close();
+          final responseString = await response.transform(utf8.decoder).join();
+
+          if (response.statusCode == 200) {
+            final js = jsonDecode(responseString);
+            final downloadToken = js['downloadTokens'];
+            url = 'https://firebasestorage.googleapis.com/v0/b/$bucket/o/$path?alt=media&token=$downloadToken';
+          } else {
+            throw Exception('Upload failed: ${response.statusCode} $responseString');
+          }
+        } finally {
+          client.close(); // Always close to prevent resource leak
         }
       } else {
         // Safe putData on all other platforms
@@ -844,9 +878,11 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
   late final TextEditingController _ageCtrl;
   late double _targetMinAge;
   late double _targetMaxAge;
+  String _gender = '';
   double? _lat;
   double? _lng;
   bool _saving = false;
+  bool _refreshingLocation = false;
 
   @override
   void initState() {
@@ -866,6 +902,7 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
     if (_targetMinAge < 18) _targetMinAge = 18;
     if (_targetMaxAge > 100) _targetMaxAge = 100;
     if (_targetMinAge > _targetMaxAge) _targetMinAge = _targetMaxAge;
+    _gender = widget.user.gender;
     _lat = widget.user.lat;
     _lng = widget.user.lng;
   }
@@ -895,6 +932,7 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
             age: int.tryParse(_ageCtrl.text),
             targetMinAge: _targetMinAge.toInt(),
             targetMaxAge: _targetMaxAge.toInt(),
+            gender: _gender,
             lat: _lat,
             lng: _lng,
           ));
@@ -916,7 +954,7 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
       _EditField.roleNatDioc: 'Role, Nationality & Diocese',
       _EditField.languages: 'Languages',
       _EditField.location: 'Location & City',
-      _EditField.agePreferences: 'Matchmaking Age Preferences',
+      _EditField.agePreferences: 'Age preferences',
     };
 
     return SingleChildScrollView(
@@ -950,6 +988,25 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
               maxLength: 300,
               decoration: _dec('Your bio'),
             ),
+            const SizedBox(height: 20),
+            const _Label('Gender'),
+            const SizedBox(height: 8),
+            Row(children: [
+              _RoleToggle(
+                  label: 'Male',
+                  selected: _gender == 'Male',
+                  onTap: () => setState(() => _gender = 'Male')),
+              const SizedBox(width: 10),
+              _RoleToggle(
+                  label: 'Female',
+                  selected: _gender == 'Female',
+                  onTap: () => setState(() => _gender = 'Female')),
+              const SizedBox(width: 10),
+              _RoleToggle(
+                  label: 'Other',
+                  selected: _gender == 'Other',
+                  onTap: () => setState(() => _gender = 'Other')),
+            ]),
           ],
 
           if (widget.field == _EditField.roleNatDioc) ...[
@@ -1109,21 +1166,38 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
               child: Column(
                 children: [
                   OutlinedButton.icon(
-                    onPressed: () async {
-                      LocationPermission perm = await Geolocator.checkPermission();
-                      if (perm == LocationPermission.denied) {
-                        perm = await Geolocator.requestPermission();
-                      }
-                      if (perm == LocationPermission.whileInUse || perm == LocationPermission.always) {
-                        final pos = await Geolocator.getCurrentPosition();
+                    onPressed: _refreshingLocation ? null : () async {
+                      final messenger = ScaffoldMessenger.of(context);
+                      setState(() => _refreshingLocation = true);
+                      final result = await LocationService.getLocation();
+                      
+                      if (!mounted) return;
+                      
+                      if (result.hasError) {
+                        messenger.showSnackBar(
+                          SnackBar(content: Text(result.error!)),
+                        );
+                      } else {
                         setState(() {
-                          _lat = pos.latitude;
-                          _lng = pos.longitude;
+                          _lat = result.lat;
+                          _lng = result.lng;
+                          if (result.city.isNotEmpty && result.city != 'Unknown') {
+                            _cityCtrl.text = result.city;
+                          }
                         });
+                        messenger.showSnackBar(
+                          const SnackBar(content: Text('Precise location updated')),
+                        );
+                      }
+                      
+                      if (mounted) {
+                        setState(() => _refreshingLocation = false);
                       }
                     },
-                    icon: const Icon(Icons.my_location, size: 16),
-                    label: const Text('Refresh Precise Location'),
+                    icon: _refreshingLocation 
+                        ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                        : const Icon(Icons.my_location, size: 16),
+                    label: Text(_refreshingLocation ? 'Finding you...' : 'Refresh Precise Location'),
                   ),
                     if (_lat != null)
                       Padding(

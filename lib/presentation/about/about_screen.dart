@@ -69,19 +69,13 @@ class AboutScreen extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           TextButton(
-                            onPressed: () async {
-                              final url = Uri.parse('https://sefirot-ff9af.web.app/terms');
-                              if (await canLaunchUrl(url)) await launchUrl(url);
-                            },
+                            onPressed: () => launchUrl(Uri.parse('https://pelegrin.cloud/terms')),
                             child: Text('Terms', 
                                 style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.secondary)),
                           ),
                           const Text('•', style: TextStyle(color: Colors.black12)),
                           TextButton(
-                            onPressed: () async {
-                              final url = Uri.parse('https://sefirot-ff9af.web.app/privacy');
-                              if (await canLaunchUrl(url)) await launchUrl(url);
-                            },
+                            onPressed: () => launchUrl(Uri.parse('https://pelegrin.cloud/privacy')),
                             child: Text('Privacy', 
                                 style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.secondary)),
                           ),

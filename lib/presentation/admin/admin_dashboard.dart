@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -120,19 +121,21 @@ class _ReportsTab extends ConsumerWidget {
               _StatCard(title: 'Pending Reports', value: '${reportsAsync.whenOrNull(data: (v) => v.length) ?? '...'}', iconColor: Colors.orange),
             ]),
             const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () => _seedData(context),
-                icon: const Icon(Icons.auto_awesome, size: 18),
-                label: const Text('Seed Test Users (Debug Only)'),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  side: BorderSide(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2)),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            // Seed button only shown in debug builds — never ship this to production
+            if (kDebugMode)
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () => _seedData(context),
+                  icon: const Icon(Icons.auto_awesome, size: 18),
+                  label: const Text('Seed Test Users (Debug Only)'),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    side: BorderSide(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
                 ),
               ),
-            ),
           const SizedBox(height: 32),
           Text('Report Queue',
               style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.bold)),
@@ -268,7 +271,7 @@ class _UsersTab extends ConsumerWidget {
                     subtitle: Text('${user.accountType} • ${user.city.isNotEmpty ? user.city : "No city"}', style: const TextStyle(fontSize: 11)),
                     trailing: Switch(
                       value: user.isBanned,
-                      activeColor: Colors.red,
+                      activeThumbColor: Colors.red,
                       onChanged: (val) async {
                         final confirm = await showDialog<bool>(
                           context: context,
@@ -347,6 +350,11 @@ class _ReportCard extends ConsumerWidget {
         content: const Text('This will immediately lock the user out of the app. Proceed?'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Ban User', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          ),
         ],
       ),
     );

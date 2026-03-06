@@ -111,7 +111,7 @@ class FirebaseMatchmakingRepository implements MatchmakingRepository {
   @override
   Future<void> sendMessage(String chatId, String senderId, String text) async {
     final batch = _firestore.batch();
-    
+
     // 1. Add message
     final msgRef = _firestore.collection('chats').doc(chatId).collection('messages').doc();
     batch.set(msgRef, {
@@ -121,20 +121,24 @@ class FirebaseMatchmakingRepository implements MatchmakingRepository {
       'read': false, // Recipient hasn't read it yet
     });
 
-    // 2. Update chat metadata
+    // 2. Resolve peer UID from the chat's participants array.
+    //    Never split the chatId string — UIDs may contain underscores.
+    final chatSnap = await _firestore.collection('chats').doc(chatId).get();
+    final participants = List<String>.from(chatSnap.data()?['participants'] ?? []);
+    final peerId = participants.firstWhere((p) => p != senderId, orElse: () => '');
+
+    // 3. Update chat metadata
     final chatRef = _firestore.collection('chats').doc(chatId);
-    final parts = chatId.split('_');
-    final peerId = parts.firstWhere((p) => p != senderId, orElse: () => '');
-    
-    final updates = {
+    final updates = <String, dynamic>{
       'lastMessage': text,
       'lastTimestamp': FieldValue.serverTimestamp(),
+      'lastMessageSenderUid': senderId,
       'lastMessageSeenBy.$senderId': true,
     };
     if (peerId.isNotEmpty) {
       updates['lastMessageSeenBy.$peerId'] = false;
     }
-    
+
     batch.update(chatRef, updates);
 
     await batch.commit();

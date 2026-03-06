@@ -17,6 +17,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
   bool canResendEmail = true;
   bool isResending = false;
   Timer? timer;
+  Timer? _resendTimer; // Cancellable replacement for Future.delayed
 
   String get _userEmail =>
       FirebaseAuth.instance.currentUser?.email ?? 'your email address';
@@ -38,6 +39,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
   @override
   void dispose() {
     timer?.cancel();
+    _resendTimer?.cancel(); // Cancel the 30-second cooldown if screen is disposed
     super.dispose();
   }
 
@@ -76,18 +78,21 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
       }
     } finally {
       if (mounted) setState(() => isResending = false);
-      // Allow resend after 30 seconds
-      await Future.delayed(const Duration(seconds: 30));
-      if (mounted) setState(() => canResendEmail = true);
+      // Allow resend after 30 seconds — use a cancellable Timer instead of
+      // Future.delayed so it doesn't fire setState after the widget is disposed.
+      _resendTimer?.cancel();
+      _resendTimer = Timer(const Duration(seconds: 30), () {
+        if (mounted) setState(() => canResendEmail = true);
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     if (isEmailVerified) {
-      return const Scaffold(
-        backgroundColor: Colors.white,
-        body: Center(child: CircularProgressIndicator()),
+      return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        body: const Center(child: CircularProgressIndicator()),
       );
     }
 
@@ -95,7 +100,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     const primaryRed = Color(0xFFCD2E3A);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(

@@ -54,6 +54,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         return state.uri.path == '/onboarding' ? null : '/onboarding';
       }
 
+      // Security Guard: Admin dashboard
+      if (state.uri.path == '/admin' && !userModel.isAdmin) {
+        return '/dashboard';
+      }
+
       // If user is accessing root, login, or verify pages while fully authed
       if (state.uri.path == '/' || isLoggingIn || state.uri.path == '/verify-email' || state.uri.path == '/onboarding') {
         return '/dashboard';
@@ -77,6 +82,17 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/banned',
         builder: (context, state) => const BannedScreen(),
+      ),
+      GoRoute(
+        path: '/admin',
+        builder: (context, state) => const AdminDashboard(),
+      ),
+      GoRoute(
+        path: '/pilgrim/:uid',
+        redirect: (context, state) {
+          final uid = state.pathParameters['uid'];
+          return '/browse?pilgrim=$uid';
+        },
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -104,7 +120,9 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/browse',
-                builder: (context, state) => const BrowseScreen(),
+                builder: (context, state) => BrowseScreen(
+                  openProfileUid: state.uri.queryParameters['pilgrim'],
+                ),
               ),
             ],
           ),
@@ -131,14 +149,6 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/about',
                 builder: (context, state) => const AboutScreen(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/admin',
-                builder: (context, state) => const AdminDashboard(),
               ),
             ],
           ),

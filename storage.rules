@@ -11,5 +11,9 @@ service firebase.storage {
                    // Must be an image
                    && request.resource.contentType.matches('image/.*');
     }
+    // Deny everything else
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
   }
 }

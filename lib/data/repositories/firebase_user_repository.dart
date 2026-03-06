@@ -24,10 +24,16 @@ class FirebaseUserRepository implements UserRepository {
 
   @override
   Future<void> updateUser(UserModel user) async {
+    // Strip null values — storing null in Firestore for optional fields like
+    // lat/lng breaks geo-queries (e.g. lat > 0 matches null documents).
+    final rawMap = user.toMap();
+    final cleanMap = Map<String, dynamic>.fromEntries(
+      rawMap.entries.where((e) => e.value != null),
+    );
     await _firestore
         .collection('users')
         .doc(user.uid)
-        .update(user.toMap());
+        .update(cleanMap);
   }
 
   @override

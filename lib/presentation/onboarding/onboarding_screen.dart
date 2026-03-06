@@ -1,4 +1,5 @@
 // Removed dart:html to fix Windows build crash
+import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
@@ -9,14 +10,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:geolocator/geolocator.dart';
+import '../../core/services/location_service.dart';
 import 'package:path/path.dart' as p;
+// Conditionally use web APIs only on web builds
 
-import '../../core/providers/auth_provider.dart';
 import '../../core/providers/user_provider.dart';
 import '../../domain/models/user_model.dart';
 import '../../core/constants/languages.dart';
 import '../../core/constants/countries.dart';
+
+// ── Firebase Storage bucket ──────────────────────────────────────────────────
+const _storageBucket = 'sefirot-ff9af.firebasestorage.app';
 
 // ── Country list ─────────────────────────────────────────────────────────────
 final List<String> _countries = globalCountries;
@@ -35,11 +39,12 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentStep = 0;
-  final int _totalSteps = 6;
+  final int _totalSteps = 7;
 
   // Step data
   final _nameController = TextEditingController();
   final _ageController = TextEditingController();
+  String _selectedGender = ''; // 'Male' | 'Female' | 'Other'
   String _selectedRole = 'pilgrim';
   
   // Photo
@@ -86,12 +91,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       _showError('Please upload a photo of yourself');
       return;
     }
+    if (_currentStep == 2 && _selectedGender.isEmpty) {
+      _showError('Please select your gender');
+      return;
+    }
     if (_currentStep == 3 && _selectedCountry.isEmpty) {
       _showError('Please select your nationality');
       return;
     }
-    if (_currentStep == 4 && _lat == null) {
-      _showError('Please allow location access to continue');
+    if (_currentStep == 4 && _lat == null && _city.isEmpty) {
+      _showError('Please allow location access or enter your city manually');
       return;
     }
     if (_currentStep == 5 && _bioController.text.trim().isEmpty) {
@@ -147,7 +156,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       if (!kIsWeb && Platform.isWindows) {
         // Use REST API on Windows to avoid firebase_storage C++ SDK crash
         final token = await FirebaseAuth.instance.currentUser?.getIdToken();
-        final bucket = 'sefirot-ff9af.firebasestorage.app';
+        final bucket = _storageBucket;
         final path = Uri.encodeComponent('avatars/$uid');
         final url = Uri.parse('https://firebasestorage.googleapis.com/v0/b/$bucket/o?name=$path');
         
@@ -200,7 +209,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       final updatedUser = currentUser.copyWith(
         displayName: _nameController.text.trim(),
         age: int.tryParse(_ageController.text.trim()),
-        photoUrl: photoUrl ?? '',
+        photoUrl: photoUrl,
         accountType: _selectedRole,
         nationality: _selectedCountry,
         city: _city,
@@ -208,6 +217,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         lng: _lng,
         languages: _selectedLanguages,
         bio: _bioController.text.trim(),
+        gender: _selectedGender,
         isOnboarded: true,
       );
       
@@ -267,8 +277,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         fetching: _fetchingLocation,
                         onLocationFetched: (lat, lng, city) {
                           setState(() {
-                             _lat = lat;
-                             _lng = lng;
+                             _lat = lat;   // null when entered manually
+                             _lng = lng;   // null when entered manually
                              _city = city;
                           });
                         },
@@ -285,6 +295,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                             }
                           });
                         }
+                      ),
+                      _StepGender(
+                        selected: _selectedGender,
+                        onChanged: (v) => setState(() => _selectedGender = v),
                       ),
                     ],
                   ),
@@ -664,12 +678,13 @@ class _StepCountryState extends State<_StepCountry> {
 }
 
 // ── Step 4: GPS Location ──────────────────────────────────────────────────────
-class _StepLocation extends StatelessWidget {
+class _StepLocation extends StatefulWidget {
   final double? lat;
   final double? lng;
   final String city;
   final bool fetching;
-  final Function(double, double, String) onLocationFetched;
+  // lat and lng are null for manual city-only entries.
+  final void Function(double? lat, double? lng, String city) onLocationFetched;
   final ValueChanged<bool> setFetching;
 
   const _StepLocation({
@@ -681,43 +696,51 @@ class _StepLocation extends StatelessWidget {
     required this.setFetching,
   });
 
-  Future<void> _getLocation(BuildContext context) async {
-    setFetching(true);
+  @override
+  State<_StepLocation> createState() => _StepLocationState();
+}
+
+class _StepLocationState extends State<_StepLocation> {
+  final _manualCityCtrl = TextEditingController();
+  bool _showManual = false;
+  String? _errorMsg;
+
+  @override
+  void dispose() {
+    _manualCityCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _getLocation() async {
+    widget.setFetching(true);
+    setState(() => _errorMsg = null);
     try {
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        throw 'Location services are disabled.';
-      }
-
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          throw 'Location permissions are denied.';
-        }
-      }
-
-      if (permission == LocationPermission.deniedForever) {
-        throw 'Location permissions are permanently denied.';
-      }
-
-      final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(accuracy: LocationAccuracy.medium),
-      );
+      final result = await LocationService.getLocation();
       
-      // We'll leave the city empty for now, or you can add geocoding later if desired
-      onLocationFetched(position.latitude, position.longitude, 'Nearby');
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      if (result.hasError) {
+        setState(() => _errorMsg = result.error);
+        return;
       }
+      
+      widget.onLocationFetched(result.lat, result.lng, result.city);
+    } catch (e) {
+      setState(() => _errorMsg = 'An unexpected error occurred: ${e.toString()}');
     } finally {
-      if (context.mounted) setFetching(false);
+      widget.setFetching(false);
     }
+  }
+
+  void _submitManual() {
+    final city = _manualCityCtrl.text.trim();
+    if (city.isEmpty) return;
+    // Manual city entry: lat/lng remain null so the user is excluded from
+    // distance sorting (they appear in Browse but with no distance shown).
+    widget.onLocationFetched(null, null, city);
   }
 
   @override
   Widget build(BuildContext context) {
+    final acquired = widget.lat != null && widget.lat != 0;
     return Padding(
       padding: const EdgeInsets.all(32),
       child: Column(
@@ -733,15 +756,18 @@ class _StepLocation extends StatelessWidget {
             child: Icon(Icons.location_on, size: 64, color: Theme.of(context).colorScheme.primary),
           ),
           const SizedBox(height: 32),
-          Text('Enable Location',
+          Text('Where are you?',
               style: GoogleFonts.outfit(fontSize: 32, fontWeight: FontWeight.w800, color: Colors.black87)),
           const SizedBox(height: 16),
-          Text('You need to enable location to find pilgrims participating in WYD near you.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey.shade600, fontSize: 16)),
-          const SizedBox(height: 48),
-          
-          if (lat != null && lng != null)
+          Text(
+            'Share your location so pilgrims near you can find you.',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+          ),
+          const SizedBox(height: 32),
+
+          // Location acquired / detected city
+          if (acquired)
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -754,30 +780,96 @@ class _StepLocation extends StatelessWidget {
                 children: [
                   Icon(Icons.check_circle, color: Colors.green.shade600),
                   const SizedBox(width: 8),
-                  Text('Location acquired', style: TextStyle(color: Colors.green.shade800, fontWeight: FontWeight.bold)),
+                  Flexible(
+                    child: Text(
+                      widget.city.isNotEmpty ? '📍 ${widget.city}' : '✅ Location saved',
+                      style: TextStyle(color: Colors.green.shade800, fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ],
               ),
             )
-          else
+          else ...[
+            // GPS button
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                onPressed: fetching ? null : () => _getLocation(context),
+              child: ElevatedButton.icon(
+                icon: widget.fetching
+                    ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                    : const Icon(Icons.my_location, color: Colors.white),
+                label: Text(
+                  widget.fetching ? 'Detecting…' : 'Use my GPS location',
+                  style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                onPressed: widget.fetching ? null : _getLocation,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                 ),
-                child: fetching 
-                    ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                    : const Text('Allow Location', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
               ),
             ),
+
+            // Error message
+            if (_errorMsg != null) ...[
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.red.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(_errorMsg!, style: TextStyle(color: Colors.red.shade700, fontSize: 13)),
+              ),
+            ],
+
+            const SizedBox(height: 16),
+
+            // Manual entry toggle
+            GestureDetector(
+              onTap: () => setState(() => _showManual = !_showManual),
+              child: Text(
+                _showManual ? 'Hide manual entry' : "Can't use GPS? Enter city manually",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontSize: 14,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            ),
+
+            if (_showManual) ...[
+              const SizedBox(height: 12),
+              Row(children: [
+                Expanded(
+                  child: TextField(
+                    controller: _manualCityCtrl,
+                    decoration: InputDecoration(
+                      hintText: 'e.g. Pamplona',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: _submitManual,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: const Text('Set', style: TextStyle(color: Colors.white)),
+                ),
+              ]),
+            ],
+          ],
         ],
       ),
     );
   }
 }
+
 
 // ── Step 5: Bio & Languages ───────────────────────────────────────────────────
 class _StepBio extends StatelessWidget {
@@ -907,6 +999,87 @@ class _NavButtons extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ── Step 2.5: Gender ──────────────────────────────────────────────────────────
+class _StepGender extends StatelessWidget {
+  final String selected;
+  final ValueChanged<String> onChanged;
+  const _StepGender({required this.selected, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('My gender is',
+              style: GoogleFonts.outfit(fontSize: 32, fontWeight: FontWeight.w800, color: Colors.black87)),
+          const SizedBox(height: 8),
+          Text('This helps other pilgrims find you.',
+              style: TextStyle(color: Colors.grey.shade600, fontSize: 16)),
+          const SizedBox(height: 40),
+          _GenderCard(
+            title: 'Male',
+            icon: Icons.male,
+            selected: selected == 'Male',
+            onTap: () => onChanged('Male'),
+          ),
+          const SizedBox(height: 16),
+          _GenderCard(
+            title: 'Female',
+            icon: Icons.female,
+            selected: selected == 'Female',
+            onTap: () => onChanged('Female'),
+          ),
+          const SizedBox(height: 16),
+          _GenderCard(
+            title: 'Other',
+            icon: Icons.person_outline,
+            selected: selected == 'Other',
+            onTap: () => onChanged('Other'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GenderCard extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final bool selected;
+  final VoidCallback onTap;
+  const _GenderCard({required this.title, required this.icon, required this.selected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: selected ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.08) : Colors.white,
+          border: Border.all(
+            color: selected ? Theme.of(context).colorScheme.secondary : Colors.grey.shade300,
+            width: selected ? 2 : 1,
+          ),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: selected ? Theme.of(context).colorScheme.secondary : Colors.grey.shade600, size: 28),
+            const SizedBox(width: 16),
+            Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: selected ? Theme.of(context).colorScheme.secondary : Colors.black87)),
+            const Spacer(),
+            if (selected) Icon(Icons.check_circle, color: Theme.of(context).colorScheme.secondary),
+          ],
+        ),
       ),
     );
   }

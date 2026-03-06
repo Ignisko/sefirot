@@ -19,15 +19,19 @@ service cloud.firestore {
                     && request.resource.data.isAdmin != true
                     && request.resource.data.isBanned != true;
 
-      // Allow updates to own profile, but prevent elevation of privileges
+      // Allow updates to own profile, but prevent privilege escalation and enforce safe field sizes
       allow update: if isSignedIn() && request.auth.uid == userId 
-                    && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['isAdmin', 'isBanned']) || isAdmin());
+                    && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['isAdmin', 'isBanned']) || isAdmin())
+                    && (!request.resource.data.keys().hasAny(['bio']) || request.resource.data.bio.size() <= 1000)
+                    && (!request.resource.data.keys().hasAny(['displayName']) || request.resource.data.displayName.size() <= 60);
 
       allow delete: if isAdmin();
     }
 
     match /reports/{reportId} {
-      allow read, write: if isAdmin();
+      // Only admins can read or modify existing reports
+      allow read, update, delete: if isAdmin();
+      // Any signed-in user can create a report (including auto-flag reports from the app)
       allow create: if isSignedIn() && request.resource.data.reporterUid == request.auth.uid;
     }
 
@@ -38,7 +42,16 @@ service cloud.firestore {
     match /connections/{connectionId} {
       allow read: if isSignedIn() && (resource == null || request.auth.uid in resource.data.userIds);
       allow create: if isSignedIn() && request.auth.uid in request.resource.data.userIds;
-      allow update: if isSignedIn() && request.auth.uid in resource.data.userIds;
+      // Only the non-sender (receiver) can accept; either party can reject.
+      // This prevents a user from self-accepting their own connection request.
+      allow update: if isSignedIn() 
+                    && request.auth.uid in resource.data.userIds
+                    && (
+                      // Accepting: caller must NOT be the original sender
+                      (request.resource.data.status == 'accepted' && request.auth.uid != resource.data.senderId)
+                      // Rejecting or any other update: any participant is allowed
+                      || request.resource.data.status != 'accepted'
+                    );
       allow delete: if isAdmin();
     }
 
@@ -63,8 +76,12 @@ service cloud.firestore {
       
       match /messages/{messageId} {
         allow read: if isSignedIn() && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
-        // Only the sender can create a message
-        allow create: if isSignedIn() && request.resource.data.senderUid == request.auth.uid && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+        // Only the sender can create a message; enforce max message length to prevent abuse
+        allow create: if isSignedIn() 
+                      && request.resource.data.senderUid == request.auth.uid 
+                      && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants
+                      && request.resource.data.text is string
+                      && request.resource.data.text.size() <= 2000;
         // Any participant can update (mark as read)
         allow update: if isSignedIn() && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
       }

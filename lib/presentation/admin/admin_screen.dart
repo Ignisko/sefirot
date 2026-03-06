@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../core/providers/auth_provider.dart';
 import '../../core/providers/user_provider.dart';
 import '../../domain/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -84,31 +83,9 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
     );
   }
 
-  Widget _buildStats(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('users').snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return const SizedBox.shrink();
-        final users = snapshot.data!.docs;
-        final total = users.length;
-        final onboarded = users.where((d) => (d.data() as Map)['isOnboarded'] == true).length;
-        final banned = users.where((d) => (d.data() as Map)['isBanned'] == true).length;
-
-        return Container(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-          color: Theme.of(context).cardColor.withValues(alpha: 0.5),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _StatItem(label: 'Total Users', value: '$total'),
-              _StatItem(label: 'Onboarded', value: '$onboarded'),
-              _StatItem(label: 'Banned', value: '$banned', color: Colors.red),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  // Stats are now derived inside _UserList from the same stream snapshot,
+  // so we no longer need a separate stream here. Stub kept for layout structure.
+  Widget _buildStats(BuildContext context) => const SizedBox.shrink();
 }
 
 class _StatItem extends StatelessWidget {
@@ -144,65 +121,90 @@ class _UserList extends ConsumerWidget {
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError) return Center(child: Text('Error: ${snapshot.error}'));
-        
+
         final docs = snapshot.data!.docs;
-        final users = docs.map((d) => UserModel.fromMap(d.data() as Map<String, dynamic>, d.id))
+
+        // Derive stats from the same snapshot — no second Firestore stream needed
+        final total = docs.length;
+        final onboarded = docs.where((d) => (d.data() as Map)['isOnboarded'] == true).length;
+        final banned = docs.where((d) => (d.data() as Map)['isBanned'] == true).length;
+
+        final users = docs
+            .map((d) => UserModel.fromMap(d.data() as Map<String, dynamic>, d.id))
             .where((u) => u.displayName.toLowerCase().contains(searchQuery) || u.email.toLowerCase().contains(searchQuery))
             .toList();
 
-        if (users.isEmpty) {
-          return const Center(child: Text('No users matching search.'));
-        }
-
-        return ListView.builder(
-          itemCount: users.length,
-          itemBuilder: (context, i) {
-            final user = users[i];
-            return ListTile(
-              leading: CircleAvatar(
-                backgroundImage: user.photoUrl.isNotEmpty ? NetworkImage(user.photoUrl) : null,
-                child: user.photoUrl.isEmpty ? Text(user.displayName.isNotEmpty ? user.displayName[0] : '?') : null,
-              ),
-              title: Text(user.displayName.isNotEmpty ? user.displayName : user.email,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-              subtitle: Text('${user.accountType} • ${user.city.isNotEmpty ? user.city : "No city"}',
-                  style: const TextStyle(fontSize: 12)),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
+        return Column(
+          children: [
+            // Stats bar (derived from the same snapshot)
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+              color: Theme.of(context).cardColor.withValues(alpha: 0.5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  if (user.isAdmin)
-                    const Padding(
-                      padding: EdgeInsets.only(right: 8),
-                      child: Icon(Icons.verified_user, color: Colors.blue, size: 16),
-                    ),
-                  Switch(
-                    value: user.isBanned,
-                    activeColor: Colors.red,
-                    onChanged: (val) async {
-                      final confirm = await showDialog<bool>(
-                        context: context,
-                        builder: (ctx) => AlertDialog(
-                          title: Text(val ? 'Ban User?' : 'Unban User?'),
-                          content: Text('Are you sure you want to ${val ? 'ban' : 'unban'} ${user.displayName}?'),
-                          actions: [
-                            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
-                            ElevatedButton(
-                              onPressed: () => Navigator.pop(ctx, true),
-                              style: ElevatedButton.styleFrom(backgroundColor: val ? Colors.red : Colors.green),
-                              child: Text(val ? 'Ban' : 'Unban'),
-                            ),
-                          ],
-                        ),
-                      );
-                      if (confirm == true) {
-                        FirebaseFirestore.instance.collection('users').doc(user.uid).update({'isBanned': val});
-                      }
-                    },
-                  ),
+                  _StatItem(label: 'Total Users', value: '$total'),
+                  _StatItem(label: 'Onboarded', value: '$onboarded'),
+                  _StatItem(label: 'Banned', value: '$banned', color: Colors.red),
                 ],
               ),
-            );
-          },
+            ),
+            if (users.isEmpty)
+              const Expanded(child: Center(child: Text('No users matching search.')))
+            else
+              Expanded(
+                child: ListView.builder(
+                  itemCount: users.length,
+                  itemBuilder: (context, i) {
+                    final user = users[i];
+                    return ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: user.photoUrl.isNotEmpty ? NetworkImage(user.photoUrl) : null,
+                        child: user.photoUrl.isEmpty ? Text(user.displayName.isNotEmpty ? user.displayName[0] : '?') : null,
+                      ),
+                      title: Text(user.displayName.isNotEmpty ? user.displayName : user.email,
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                      subtitle: Text('${user.accountType} • ${user.city.isNotEmpty ? user.city : "No city"}',
+                          style: const TextStyle(fontSize: 12)),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (user.isAdmin)
+                            const Padding(
+                              padding: EdgeInsets.only(right: 8),
+                              child: Icon(Icons.verified_user, color: Colors.blue, size: 16),
+                            ),
+                          Switch(
+                            value: user.isBanned,
+                            activeThumbColor: Colors.red,
+                            onChanged: (val) async {
+                              final confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: Text(val ? 'Ban User?' : 'Unban User?'),
+                                  content: Text('Are you sure you want to ${val ? 'ban' : 'unban'} ${user.displayName}?'),
+                                  actions: [
+                                    TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+                                    ElevatedButton(
+                                      onPressed: () => Navigator.pop(ctx, true),
+                                      style: ElevatedButton.styleFrom(backgroundColor: val ? Colors.red : Colors.green),
+                                      child: Text(val ? 'Ban' : 'Unban'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                              if (confirm == true) {
+                                FirebaseFirestore.instance.collection('users').doc(user.uid).update({'isBanned': val});
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+          ],
         );
       },
     );

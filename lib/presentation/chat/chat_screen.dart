@@ -90,10 +90,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         _snack('Daily message limit reached (40/day). Come back tomorrow.');
         return;
       }
-      
-      // Ensure the chat document is created before sending the first message
-      await _ensureChatDoc();
 
+      // Chat doc is guaranteed by _ensureChatDoc() called in initState.
+      // No need to call it again here.
       await ref.read(matchmakingRepositoryProvider).sendMessage(_chatId, _myUid, text);
       _ctrl.clear();
       _scrollToBottom();
@@ -157,7 +156,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         ),
         title: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () => showProfileDetail(context, widget.peer),
+          onTap: () => showProfileDetail(context, widget.peer, hideConnectButton: true),
           child: Row(
             children: [
               CircleAvatar(
@@ -242,14 +241,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   ),
                 );
               }
-              // Mark unread as read
-              for (final doc in docs) {
-                final data = doc.data() as Map<String, dynamic>;
-                if (data['senderUid'] != _myUid &&
-                    data['read'] == false) {
-                  doc.reference.update({'read': true});
+              // Mark unread messages as read, scheduled after the frame to
+              // avoid triggering Firestore writes on every widget repaint.
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!mounted) return;
+                for (final doc in docs) {
+                  final data = doc.data() as Map<String, dynamic>;
+                  if (data['senderUid'] != _myUid && data['read'] == false) {
+                    doc.reference.update({'read': true});
+                  }
                 }
-              }
+              });
               return ListView.builder(
                 controller: _scroll,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

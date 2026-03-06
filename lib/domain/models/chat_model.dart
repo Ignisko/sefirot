@@ -7,6 +7,7 @@ class ChatModel {
   final DateTime? lastMessageTime;
   final Map<String, dynamic> lastMessageSeenBy;
   final List<String> archivedBy;
+  final String lastMessageSenderUid;
 
   ChatModel({
     required this.id,
@@ -15,6 +16,7 @@ class ChatModel {
     this.lastMessageTime,
     required this.lastMessageSeenBy,
     this.archivedBy = const [],
+    this.lastMessageSenderUid = '',
   });
 
   factory ChatModel.fromMap(Map<String, dynamic> data, String documentId) {
@@ -27,6 +29,7 @@ class ChatModel {
           : null,
       lastMessageSeenBy: Map<String, dynamic>.from(data['lastMessageSeenBy'] ?? {}),
       archivedBy: List<String>.from(data['archivedBy'] ?? []),
+      lastMessageSenderUid: data['lastMessageSenderUid'] ?? '',
     );
   }
 
@@ -37,6 +40,7 @@ class ChatModel {
       'lastTimestamp': lastMessageTime != null ? Timestamp.fromDate(lastMessageTime!) : FieldValue.serverTimestamp(),
       'lastMessageSeenBy': lastMessageSeenBy,
       'archivedBy': archivedBy,
+      'lastMessageSenderUid': lastMessageSenderUid,
     };
   }
 }

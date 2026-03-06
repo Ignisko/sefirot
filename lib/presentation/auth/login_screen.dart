@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'auth_controller.dart';
 import '../../core/providers/auth_provider.dart';
 
@@ -50,6 +51,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       return;
     }
     if (_mode == true) {
+      // Sign-up: enforce minimum password length before hitting Firebase
+      if (pass.length < 6) {
+        _snack('Password must be at least 6 characters');
+        return;
+      }
       final name = _firstNameCtrl.text.trim();
       ref
           .read(authControllerProvider.notifier)
@@ -63,6 +69,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final email = _emailCtrl.text.trim();
     if (email.isEmpty) {
       _snack('Please enter your email address first to reset password.');
+      return;
+    }
+    // Basic format check before making a Firebase call
+    if (!email.contains('@') || !email.contains('.')) {
+      _snack('Please enter a valid email address.');
       return;
     }
     try {
@@ -649,9 +660,15 @@ class _FishCrossState extends State<_FishCross>
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextButton(onPressed: () {}, child: Text('Terms', style: TextStyle(fontSize: 11, color: Colors.black26))),
+            TextButton(
+              onPressed: () => launchUrl(Uri.parse('https://pelegrin.cloud/terms')),
+              child: Text('Terms', style: TextStyle(fontSize: 11, color: Colors.black26)),
+            ),
             const Text('•', style: TextStyle(color: Colors.black12, fontSize: 10)),
-            TextButton(onPressed: () {}, child: Text('Privacy', style: TextStyle(fontSize: 11, color: Colors.black26))),
+            TextButton(
+              onPressed: () => launchUrl(Uri.parse('https://pelegrin.cloud/privacy')),
+              child: Text('Privacy', style: TextStyle(fontSize: 11, color: Colors.black26)),
+            ),
           ],
         ),
         Row(

@@ -1,5 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+// Sentinel value used by copyWith to distinguish "not provided" from explicit null.
+const _unset = _Unset();
+
+final class _Unset {
+  const _Unset();
+}
+
 class UserModel {
   final String uid;
   final String email;
@@ -23,6 +30,7 @@ class UserModel {
   final int? targetMaxAge;
   final bool isAdmin;
   final bool isBanned;
+  final String gender; // 'Male' | 'Female' | 'Other' | ''
 
   UserModel({
     required this.uid,
@@ -47,6 +55,7 @@ class UserModel {
     this.targetMaxAge = 100,
     this.isAdmin = false,
     this.isBanned = false,
+    this.gender = '',
   });
 
   // Convert UserModel to a Map (useful for Firestore)
@@ -71,6 +80,7 @@ class UserModel {
       'age': age,
       'targetMinAge': targetMinAge,
       'targetMaxAge': targetMaxAge,
+      'gender': gender,
     };
     if (includeAdminFields) {
       map['isAdmin'] = isAdmin;
@@ -106,6 +116,7 @@ class UserModel {
       targetMaxAge: int.tryParse(map['targetMaxAge']?.toString() ?? '100') ?? 100,
       isAdmin: map['isAdmin'] ?? false,
       isBanned: map['isBanned'] ?? false,
+      gender: map['gender'] ?? '',
       createdAt: map['createdAt'] != null
           ? (map['createdAt'] is Timestamp
               ? (map['createdAt'] as Timestamp).toDate()
@@ -114,7 +125,9 @@ class UserModel {
     );
   }
 
-  // Helper method to create a copy of the model with updated fields
+  // Helper method to create a copy of the model with updated fields.
+  // Pass null explicitly for [lat], [lng], or [age] to clear those fields.
+  // For non-nullable fields, omit the parameter to keep the existing value.
   UserModel copyWith({
     String? uid,
     String? email,
@@ -131,13 +144,14 @@ class UserModel {
     List<String>? blockedUids,
     String? diocese,
     String? city,
-    double? lat,
-    double? lng,
-    int? age,
+    Object? lat = _unset,   // use null to clear
+    Object? lng = _unset,   // use null to clear
+    Object? age = _unset,   // use null to clear
     int? targetMinAge,
     int? targetMaxAge,
     bool? isAdmin,
     bool? isBanned,
+    String? gender,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -155,13 +169,14 @@ class UserModel {
       blockedUids: blockedUids ?? this.blockedUids,
       diocese: diocese ?? this.diocese,
       city: city ?? this.city,
-      lat: lat ?? this.lat,
-      lng: lng ?? this.lng,
-      age: age ?? this.age,
+      lat: lat == _unset ? this.lat : lat as double?,
+      lng: lng == _unset ? this.lng : lng as double?,
+      age: age == _unset ? this.age : age as int?,
       targetMinAge: targetMinAge ?? this.targetMinAge,
       targetMaxAge: targetMaxAge ?? this.targetMaxAge,
       isAdmin: isAdmin ?? this.isAdmin,
       isBanned: isBanned ?? this.isBanned,
+      gender: gender ?? this.gender,
     );
   }
 }

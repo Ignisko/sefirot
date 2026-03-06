@@ -1,3 +1,4 @@
+// ignore_for_file: deprecated_member_use
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -53,30 +54,84 @@ class UserActionsHelper {
   }
 
   static Future<void> _confirmBlock(BuildContext context, WidgetRef ref, UserModel targetUser) async {
-    final confirm = await showDialog<bool>(
+    String selectedReason = 'Not interested';
+    final reasons = ['Not interested', 'Spam / Fake Profile', 'Harassment', 'Other'];
+    final detailsCtrl = TextEditingController();
+
+    final confirmData = await showDialog<Map<String, String>>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Block ${_name(targetUser)}?'),
-        content: const Text('Once blocked, you will no longer see this user in your Browse queue or Messages.'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text('Block', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold)),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setState) => AlertDialog(
+          title: Text('Block ${_name(targetUser)}?'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Once blocked, you will no longer see this user in your Browse queue or Messages.'),
+                const SizedBox(height: 16),
+                const Text('Reason for blocking (helps us moderate):', style: TextStyle(fontWeight: FontWeight.w600)),
+                ...reasons.map((r) =>
+                    RadioListTile<String>(
+                      title: Text(r, style: const TextStyle(fontSize: 14)),
+                      value: r,
+                      groupValue: selectedReason,
+                      onChanged: (val) => setState(() => selectedReason = val!),
+                      contentPadding: EdgeInsets.zero,
+                      dense: true,
+                    )),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: detailsCtrl,
+                  decoration: const InputDecoration(
+                    labelText: 'Additional Context (Optional)',
+                    border: OutlineInputBorder(),
+                    isDense: true,
+                  ),
+                  maxLines: 2,
+                )
+              ],
+            ),
           ),
-        ],
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, null), child: const Text('Cancel')),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, {
+                'reason': selectedReason,
+                'details': detailsCtrl.text,
+              }),
+              child: Text('Block', style: TextStyle(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
       ),
     );
 
-    if (confirm != true) return;
+    if (confirmData == null) return;
+    final finalReason = confirmData['details']!.isNotEmpty 
+        ? '${confirmData['reason']}: ${confirmData['details']}' 
+        : confirmData['reason']!;
 
     final myUid = ref.read(authRepositoryProvider).currentUser?.uid;
     if (myUid == null) return;
 
     try {
-      await FirebaseFirestore.instance.collection('users').doc(myUid).update({
+      final batch = FirebaseFirestore.instance.batch();
+      final userDoc = FirebaseFirestore.instance.collection('users').doc(myUid);
+      batch.update(userDoc, {
         'blockedUids': FieldValue.arrayUnion([targetUser.uid]),
       });
+      
+      final blockDoc = FirebaseFirestore.instance.collection('blocks').doc();
+      batch.set(blockDoc, {
+        'blockerUid': myUid,
+        'blockedUid': targetUser.uid,
+        'reason': finalReason,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+      
+      await batch.commit();
+
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('${_name(targetUser)} blocked.')),
@@ -99,27 +154,41 @@ class UserActionsHelper {
       'Off-Topic / Not a Pilgrim',
       'Other'
     ];
+    final detailsCtrl = TextEditingController();
 
     showDialog(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setState) => AlertDialog(
           title: Text('Report ${_name(targetUser)}'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Why are you reporting this user?', style: TextStyle(fontSize: 14)),
-              const SizedBox(height: 12),
-              ...reasons.map((r) => RadioListTile<String>(
-                    title: Text(r, style: const TextStyle(fontSize: 14)),
-                    value: r,
-                    groupValue: selectedReason,
-                    onChanged: (val) => setState(() => selectedReason = val!),
-                    contentPadding: EdgeInsets.zero,
-                    dense: true,
-                  )),
-            ],
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Why are you reporting this user?', style: TextStyle(fontSize: 14)),
+                const SizedBox(height: 12),
+                ...reasons.map((r) =>
+                    RadioListTile<String>(
+                      title: Text(r, style: const TextStyle(fontSize: 14)),
+                      value: r,
+                      groupValue: selectedReason,
+                      onChanged: (val) => setState(() => selectedReason = val!),
+                      contentPadding: EdgeInsets.zero,
+                      dense: true,
+                    )),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: detailsCtrl,
+                  decoration: const InputDecoration(
+                    labelText: 'Additional Details (Optional)',
+                    border: OutlineInputBorder(),
+                    isDense: true,
+                  ),
+                  maxLines: 3,
+                )
+              ],
+            ),
           ),
           actions: [
             TextButton(
@@ -131,9 +200,13 @@ class UserActionsHelper {
                 final myUid = ref.read(authRepositoryProvider).currentUser?.uid;
                 if (myUid == null) return;
                 
+                final finalReason = detailsCtrl.text.isNotEmpty 
+                    ? '$selectedReason: ${detailsCtrl.text}' 
+                    : selectedReason;
+
                 Navigator.pop(ctx);
                 try {
-                  await ref.read(userRepositoryProvider).reportUser(myUid, targetUser.uid, selectedReason);
+                  await ref.read(userRepositoryProvider).reportUser(myUid, targetUser.uid, finalReason);
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
