@@ -144,16 +144,16 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/about',
-                builder: (context, state) => const AboutScreen(),
-              ),
-            ],
-          ),
-        ],
-      ),
+           StatefulShellBranch(
+             routes: [
+               GoRoute(
+                 path: '/profile',
+                 builder: (context, state) => const ProfilePane(),
+               ),
+             ],
+           ),
+         ],
+       ),
     ],
   );
 });

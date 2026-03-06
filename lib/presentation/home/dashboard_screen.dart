@@ -58,7 +58,7 @@ class DashboardScreen extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(32),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF2563EB).withValues(alpha: 0.2),
+                        color: const Color(0xFF2563EB).withValues(alpha: 0.15),
                         blurRadius: 30,
                         offset: const Offset(0, 15),
                       ),
@@ -81,7 +81,7 @@ class DashboardScreen extends ConsumerWidget {
                             const SizedBox(height: 20),
                             Text(
                               'World Youth Day',
-                              style: GoogleFonts.outfit(color: Colors.white, fontSize: 40, fontWeight: FontWeight.w900, height: 1.1),
+                              style: GoogleFonts.outfit(color: Colors.white, fontSize: 42, fontWeight: FontWeight.w900, height: 1.1),
                             ),
                             const SizedBox(height: 12),
                             Text(
@@ -93,7 +93,7 @@ class DashboardScreen extends ConsumerWidget {
                               onPressed: () => onNavigate(1),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
-                                foregroundColor: const Color(0xFF2563EB),
+                                foregroundColor: const Color(0xFF1E293B),
                                 padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                                 elevation: 0,
@@ -105,48 +105,42 @@ class DashboardScreen extends ConsumerWidget {
                       ),
                       const SizedBox(width: 40),
                       if (MediaQuery.of(context).size.width > 700)
-                        Icon(Icons.public, size: 160, color: Colors.white.withValues(alpha: 0.2)),
+                        Icon(Icons.public, size: 180, color: Colors.white.withValues(alpha: 0.15)),
                     ],
                   ),
                 ),
 
                 const SizedBox(height: 32),
 
-                // Quick Links Group
+                // Quick Links
                 LayoutBuilder(
                   builder: (context, constraints) {
-                    final isWide = constraints.maxWidth > 700;
-                    return GridView.count(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      crossAxisCount: isWide ? 3 : 1,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      childAspectRatio: isWide ? 1.3 : 2.2,
+                    final isWide = constraints.maxWidth > 600;
+                    return Wrap(
+                      spacing: 24,
+                      runSpacing: 24,
                       children: [
-                        _QuickLinkCard(
-                          icon: Icons.person_pin,
-                          title: 'Your Profile',
-                          subtitle: 'View your bio',
-                          color: Colors.blue.shade50,
-                          iconColor: Colors.blue.shade700,
-                          onTap: () => onNavigate(3),
+                        SizedBox(
+                          width: isWide ? (constraints.maxWidth - 24) / 2 : constraints.maxWidth,
+                          child: _QuickLinkCard(
+                            icon: Icons.person_pin,
+                            title: 'Your Profile',
+                            subtitle: 'View your bio',
+                            color: const Color(0xFFE0F2FE),
+                            iconColor: const Color(0xFF0284C7),
+                            onTap: () => onNavigate(3),
+                          ),
                         ),
-                        _QuickLinkCard(
-                          icon: Icons.chat_bubble_outline,
-                          title: 'Messages',
-                          subtitle: 'Check your inbox',
-                          color: Colors.orange.shade50,
-                          iconColor: Colors.orange.shade700,
-                          onTap: () => onNavigate(2),
-                        ),
-                        _QuickLinkCard(
-                          icon: Icons.search,
-                          title: 'Browse',
-                          subtitle: 'Find connections',
-                          color: Colors.pink.shade50,
-                          iconColor: const Color(0xFFE11D48),
-                          onTap: () => onNavigate(1),
+                        SizedBox(
+                          width: isWide ? (constraints.maxWidth - 24) / 2 : constraints.maxWidth,
+                          child: _QuickLinkCard(
+                            icon: Icons.chat_bubble_outline,
+                            title: 'Messages',
+                            subtitle: 'Check your inbox',
+                            color: const Color(0xFFFFF7ED),
+                            iconColor: const Color(0xFFEA580C),
+                            onTap: () => onNavigate(2),
+                          ),
                         ),
                       ],
                     );
@@ -183,11 +177,11 @@ class _QuickLinkCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(32),
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(28),
-          border: Border.all(color: iconColor.withValues(alpha: 0.1), width: 1),
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(color: iconColor.withValues(alpha: 0.1), width: 1.5),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,11 +195,11 @@ class _QuickLinkCard extends StatelessWidget {
               ),
               child: Icon(icon, color: iconColor, size: 28),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
             Text(
               title,
               style: GoogleFonts.outfit(
-                fontSize: 20,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: const Color(0xFF1E293B),
               ),
@@ -214,8 +208,8 @@ class _QuickLinkCard extends StatelessWidget {
             Text(
               subtitle,
               style: TextStyle(
-                color: Colors.blueGrey.shade600,
-                fontSize: 14,
+                color: Colors.blueGrey.shade700,
+                fontSize: 15,
               ),
             ),
           ],

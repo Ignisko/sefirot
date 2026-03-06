@@ -77,7 +77,6 @@ class HomeScreen extends ConsumerWidget {
       const NavigationDestination(icon: Icon(Icons.search_outlined), selectedIcon: Icon(Icons.search), label: 'Browse'),
       const NavigationDestination(icon: Icon(Icons.chat_bubble_outline), selectedIcon: Icon(Icons.chat_bubble), label: 'Messages'),
       const NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Profile'),
-      const NavigationDestination(icon: Icon(Icons.info_outline), selectedIcon: Icon(Icons.info), label: 'About'),
     ];
 
     return Scaffold(
@@ -238,11 +237,6 @@ class _Sidebar extends ConsumerWidget {
             icon: Icons.person_outline,
             selected: currentTab == 3,
             onTap: () => onTabChange(3)),
-        _NavItem(
-            label: 'About',
-            icon: Icons.info_outline,
-            selected: currentTab == 4,
-            onTap: () => onTabChange(4)),
 
         const Spacer(),
       ],
