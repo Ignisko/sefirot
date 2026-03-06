@@ -149,129 +149,15 @@ class BrowseScreen extends ConsumerStatefulWidget {
 
 class _BrowseScreenState extends ConsumerState<BrowseScreen> {
   _Filters _f = const _Filters();
+  bool _showFilters = false;
   
   void _setFilters(_Filters f) {
     setState(() => _f = f);
   }
 
-  void _openFilterDialog() {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: 'Dismiss',
-      barrierColor: Colors.black54,
-      transitionDuration: const Duration(milliseconds: 300),
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return Align(
-          alignment: Alignment.topCenter,
-          child: Material(
-            color: Colors.transparent,
-            child: Container(
-              width: double.infinity,
-              constraints: const BoxConstraints(maxWidth: 500),
-              margin: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top + 10,
-                left: 16,
-                right: 16,
-              ),
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: const [
-                  BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 4))
-                ],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Header
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 16, 16, 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Filters',
-                            style: GoogleFonts.outfit(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.onSurface)),
-                        IconButton(
-                          icon: const Icon(Icons.close, color: Colors.black54),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Divider(height: 1),
-                  // Scrollable Filters Builder
-                  Flexible(
-                    child: SingleChildScrollView(
-                      child: StatefulBuilder(
-                        builder: (context, setModalState) {
-                          return _FilterPanel(
-                            filters: _f,
-                            onChange: (newF) {
-                              _setFilters(newF);
-                              setModalState(() {});
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: const BoxDecoration(
-                      border: Border(top: BorderSide(color: Colors.black12)),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            _setFilters(const _Filters());
-                            Navigator.of(context).pop();
-                          },
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.grey.shade600,
-                            backgroundColor: Colors.grey.shade200,
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                          ),
-                          child: const Text('Clear Filters', style: TextStyle(fontWeight: FontWeight.bold)),
-                        ),
-                        const SizedBox(width: 12),
-                        ElevatedButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                          ),
-                          child: const Text('Search', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0, -1),
-            end: Offset.zero,
-          ).animate(CurvedAnimation(
-            parent: animation,
-            curve: Curves.easeOutCubic,
-          )),
-          child: child,
-        );
-      },
-    );
+  void _toggleFilters() {
+    setState(() => _showFilters = !_showFilters);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -292,8 +178,39 @@ class _BrowseScreenState extends ConsumerState<BrowseScreen> {
         filters: _f,
         onChange: _setFilters,
         showFilterBtn: true,
-        onFilterTap: _openFilterDialog,
+        onFilterTap: _toggleFilters,
       ),
+      if (_showFilters)
+        Container(
+          color: Theme.of(context).cardColor,
+          constraints: const BoxConstraints(maxHeight: 300),
+          width: double.infinity,
+          child: Column(
+            children: [
+              Expanded(
+                child: _FilterPanel(filters: _f, onChange: _setFilters),
+              ),
+              const Divider(height: 1, color: _border),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => _setFilters(const _Filters()),
+                      child: const Text('Clear Filters'),
+                    ),
+                    const SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: _toggleFilters,
+                      child: const Text('Apply'),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
       Expanded(child: _PilgrimGrid(filters: _f, myUid: myUid, openProfileUid: widget.openProfileUid)),
     ]);
   }
@@ -306,9 +223,40 @@ class _BrowseScreenState extends ConsumerState<BrowseScreen> {
         filters: _f,
         onChange: _setFilters,
         showFilterBtn: true,
-        onFilterTap: _openFilterDialog,
+        onFilterTap: _toggleFilters,
       ),
       const Divider(height: 1, color: _border),
+      if (_showFilters)
+        Container(
+          color: Theme.of(context).cardColor,
+          constraints: const BoxConstraints(maxHeight: 300),
+          width: double.infinity,
+          child: Column(
+            children: [
+              Expanded(
+                child: _FilterPanel(filters: _f, onChange: _setFilters),
+              ),
+              const Divider(height: 1, color: _border),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => _setFilters(const _Filters()),
+                      child: const Text('Clear Filters'),
+                    ),
+                    const SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: _toggleFilters,
+                      child: const Text('Apply'),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
       Expanded(child: _PilgrimGrid(filters: _f, columns: 1, myUid: myUid, openProfileUid: widget.openProfileUid)),
     ]);
   }
