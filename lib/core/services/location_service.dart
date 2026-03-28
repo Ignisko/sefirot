@@ -87,21 +87,34 @@ class LocationService {
       final pos = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(accuracy: LocationAccuracy.medium),
       ).timeout(
-        const Duration(seconds: 10),
-        onTimeout: () => throw TimeoutException('GPS timed out. Please try again.'),
+        const Duration(seconds: 12),
+        onTimeout: () => throw TimeoutException('GPS signal timed out. Please ensure you have a clear view of the sky or are near a window.'),
       );
       lat = pos.latitude;
       lng = pos.longitude;
 
-      // Reverse geocode with Nominatim (free, open-source, no API key)
-      final city = await _reverseGeocode(lat, lng);
+      // Reverse geocode with Nominatim
+      // Wrapped in a timeout to ensure it doesn't block the UI if Nominatim is slow
+      final city = await _reverseGeocode(lat, lng).timeout(
+        const Duration(seconds: 5),
+        onTimeout: () => 'Unknown',
+      );
 
-      return LocationResult(lat: lat, lng: lng, city: city);
+      final roundedLat = double.parse(lat.toStringAsFixed(3));
+      final roundedLng = double.parse(lng.toStringAsFixed(3));
+
+      return LocationResult(lat: roundedLat, lng: roundedLng, city: city);
+
     } catch (e) {
       String msg = e.toString().replaceFirst('Exception: ', '');
-      if (msg.contains('minified:') || msg.contains('GeolocationPositionError')) {
-        msg = 'Location permission denied or unavailable. Please enable it in your browser settings.';
+      if (msg.contains('minified:') || msg.contains('GeolocationPositionError') || msg.contains('User denied')) {
+        msg = 'Location permission denied or unavailable. Please enable location access in your browser or system settings.';
+      } else if (msg.contains('TimeoutException')) {
+        msg = 'Location retrieval timed out. Please try again or enter your city manually.';
+      } else if (msg.contains('ServiceDisabledException')) {
+        msg = 'Location services are disabled on your device.';
       }
+      debugPrint('[LocationService] Error: $e');
       return LocationResult(lat: 0, lng: 0, city: '', error: msg);
     }
   }

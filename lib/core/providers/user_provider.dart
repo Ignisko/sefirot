@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../domain/repositories/user_repository.dart';
 import '../../data/repositories/firebase_user_repository.dart';
 import '../../domain/models/user_model.dart';
@@ -28,3 +30,14 @@ final userProfileProvider = StreamProvider.family.autoDispose<UserModel?, String
   final userRepository = ref.watch(userRepositoryProvider);
   return userRepository.getUser(uid);
 });
+
+/// Dedicated provider to check if a user has administrative privileges.
+/// This checks a restricted 'admins' collection for the user's UID.
+final isAdminProvider = StreamProvider.family.autoDispose<bool, String>((ref, uid) {
+  return FirebaseFirestore.instance
+      .collection('admins')
+      .doc(uid)
+      .snapshots()
+      .map((snap) => snap.exists);
+});
+

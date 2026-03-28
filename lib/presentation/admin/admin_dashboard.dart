@@ -54,14 +54,16 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> with SingleTick
 
   @override
   Widget build(BuildContext context) {
-    final myUserAsync = ref.watch(currentUserModelProvider);
-    
-    return myUserAsync.when(
-      data: (myUser) {
-        if (myUser == null || !myUser.isAdmin) {
-          return const Scaffold(body: Center(child: Text('Access Denied.')));
-        }
+    final myUid = ref.watch(authRepositoryProvider).currentUser?.uid ?? '';
+    final isAdminAsync = ref.watch(isAdminProvider(myUid));
 
+    return isAdminAsync.when(
+      data: (isAdmin) {
+        if (!isAdmin) {
+          return const Scaffold(
+            body: Center(child: Text('Access Denied. Admins only.')),
+          );
+        }
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.surface,
           appBar: AppBar(

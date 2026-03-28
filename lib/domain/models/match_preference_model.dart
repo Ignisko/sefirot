@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MatchPreferenceModel {
   final String userId;
-  final String seekingRole; // e.g. 'pilgrim' or 'volunteer' or 'any'
+  final String seekingRole; // e.g. 'pilgrim' or 'any'
+
   final int minAge;
   final int maxAge;
   final List<String> preferredLanguages;

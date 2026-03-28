@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import '../../domain/repositories/auth_repository.dart';
 
@@ -8,14 +9,17 @@ class FirebaseAuthRepository implements AuthRepository {
   final FirebaseAuth _auth;
   final GoogleSignIn _googleSignIn;
   final FirebaseFirestore _firestore;
+  final FirebaseStorage _storage;
 
   FirebaseAuthRepository({
     FirebaseAuth? auth,
     GoogleSignIn? googleSignIn,
     FirebaseFirestore? firestore,
+    FirebaseStorage? storage,
   })  : _auth = auth ?? FirebaseAuth.instance,
         _googleSignIn = googleSignIn ?? GoogleSignIn(),
-        _firestore = firestore ?? FirebaseFirestore.instance;
+        _firestore = firestore ?? FirebaseFirestore.instance,
+        _storage = storage ?? FirebaseStorage.instance;
 
   @override
   Stream<User?> get authStateChanges => _auth.authStateChanges();
@@ -95,6 +99,36 @@ class FirebaseAuthRepository implements AuthRepository {
     await _auth.sendPasswordResetEmail(email: email);
   }
 
+  @override
+  Future<void> deleteAccount() async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    final uid = user.uid;
+
+    try {
+      // 1. Delete Firestore user document
+      await _firestore.collection('users').doc(uid).delete();
+
+      // 2. Delete Profile Photo from Storage (if it exists)
+      try {
+        await _storage.ref('avatars/$uid').delete();
+      } catch (e) {
+        // Ignore if file doesn't exist or other minor storage issues
+        debugPrint('[AuthRepository] Storage deletion failed (maybe no photo): $e');
+      }
+
+      // 3. Delete from Firebase Auth
+      await user.delete();
+
+      // 4. Sign out from Google if necessary
+      if (!kIsWeb) await _googleSignIn.signOut();
+    } catch (e) {
+      debugPrint('[AuthRepository] Delete Account Error: $e');
+      rethrow;
+    }
+  }
+
   /// Creates the user document in Firestore if it does not already exist.
   /// This is called on both sign-up and first Google sign-in.
   Future<void> _createUserDocIfNotExists(User? user, {String displayName = ''}) async {
@@ -117,10 +151,9 @@ class FirebaseAuthRepository implements AuthRepository {
         'events': <String>[],
         'nationality': '',
         'isOnboarded': false,
-        'isAdmin': false,
-        'isBanned': false,
         'createdAt': FieldValue.serverTimestamp(),
       });
     }
   }
 }
+

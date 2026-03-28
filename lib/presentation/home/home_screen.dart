@@ -198,9 +198,8 @@ class _Sidebar extends ConsumerWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          user.accountType == 'volunteer'
-                              ? 'Volunteer'
-                              : 'Pilgrim',
+                  'Pilgrim',
+
                           style: const TextStyle(
                               fontSize: 12, color: Colors.black45),
                         ),
@@ -396,10 +395,9 @@ class _ProfileContent extends ConsumerWidget {
               runSpacing: 6,
               children: [
                 _Badge(
-                    label: user.accountType == 'volunteer'
-                        ? 'Volunteer'
-                        : 'Pilgrim',
-                    color: user.accountType == 'volunteer' ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.secondary),
+                    label: 'Pilgrim',
+                    color: Theme.of(context).colorScheme.secondary),
+
                 if (user.nationality.isNotEmpty)
                   _Badge(label: user.nationality, color: Colors.black54),
                 if (user.diocese.isNotEmpty)
@@ -573,24 +571,18 @@ class _ProfileContent extends ConsumerWidget {
     deleteCtrl.dispose();
     if (confirmed != true) return;
     try {
-      // 1. Delete avatar from Firebase Storage (best effort)
-      try {
-        await FirebaseStorage.instance.ref('avatars/${user.uid}').delete();
-      } catch (_) {
-        // Avatar may not exist — ignore storage errors
-      }
-      // 2. Delete Firestore user doc
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).delete();
-      // 3. Delete Firebase Auth account
-      await FirebaseAuth.instance.currentUser?.delete();
-      // Note: chat records and messages require a Cloud Function for full cascade deletion.
+      await ref.read(authRepositoryProvider).deleteAccount();
     } catch (e) {
       if (ctx.mounted) {
         ScaffoldMessenger.of(ctx).showSnackBar(
-          SnackBar(content: Text('Deletion failed: $e. Please re-login and try again.'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('Deletion failed: $e. Please re-login and try again.'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }
+
   }
 
   void _openEdit(BuildContext ctx, UserModel user, _EditField field) {
@@ -758,13 +750,13 @@ class _SmallAvatar extends ConsumerWidget {
         ? user.displayName[0].toUpperCase()
         : user.email[0].toUpperCase();
     return CircleAvatar(
-      radius: 20,
+      radius: 17, // Reduced from 20
       backgroundColor: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
       backgroundImage: url.isNotEmpty ? NetworkImage(url) : null,
       child: url.isEmpty
           ? Text(init,
               style: TextStyle(
-                  fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary, fontSize: 14))
+                  fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary, fontSize: 13))
           : null,
     );
   }
@@ -913,7 +905,16 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
   }
 
   Future<void> _save() async {
+    final age = int.tryParse(_ageCtrl.text) ?? 18;
+    if (age < 18) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Minimum age is 18. Please enter a valid age.')),
+      );
+      return;
+    }
+    
     setState(() => _saving = true);
+
     try {
       await ref.read(userRepositoryProvider).updateUser(widget.user.copyWith(
             displayName: _nameCtrl.text.trim(),
@@ -1004,20 +1005,6 @@ class _EditSheetState extends ConsumerState<_EditSheet> {
           ],
 
           if (widget.field == _EditField.roleNatDioc) ...[
-            const _Label('Role'),
-            const SizedBox(height: 8),
-            Row(children: [
-              _RoleToggle(
-                  label: 'Pilgrim',
-                  selected: _role == 'pilgrim',
-                  onTap: () => setState(() => _role = 'pilgrim')),
-              const SizedBox(width: 10),
-              _RoleToggle(
-                  label: 'Volunteer',
-                  selected: _role == 'volunteer',
-                  onTap: () => setState(() => _role = 'volunteer')),
-            ]),
-            const SizedBox(height: 16),
             const _Label('Target Diocese (Seoul 2027)'),
             const SizedBox(height: 8),
             Wrap(

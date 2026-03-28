@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../core/providers/auth_provider.dart';
 import '../../core/providers/user_provider.dart';
 import '../../domain/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,15 +18,18 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final myUserAsync = ref.watch(currentUserModelProvider);
+    final myUid = ref.watch(authRepositoryProvider).currentUser?.uid ?? '';
+    final isAdminAsync = ref.watch(isAdminProvider(myUid));
 
-    return myUserAsync.when(
-      data: (myUser) {
-        if (myUser == null || !myUser.isAdmin) {
+    return isAdminAsync.when(
+      data: (isAdmin) {
+        if (!isAdmin) {
           return const Scaffold(
             body: Center(child: Text('Access Denied. Admins only.')),
           );
         }
+
+
 
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.surface,
@@ -169,11 +173,7 @@ class _UserList extends ConsumerWidget {
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          if (user.isAdmin)
-                            const Padding(
-                              padding: EdgeInsets.only(right: 8),
-                              child: Icon(Icons.verified_user, color: Colors.blue, size: 16),
-                            ),
+
                           Switch(
                             value: user.isBanned,
                             activeThumbColor: Colors.red,

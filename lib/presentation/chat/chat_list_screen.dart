@@ -339,8 +339,8 @@ class _PaxTile extends StatelessWidget {
 
         final name = peer.displayName.isNotEmpty ? peer.displayName : peer.email.split('@').first;
         final initials = name[0].toUpperCase();
-        final isVol = peer.accountType == 'volunteer';
-        final color = isVol ? const Color(0xFFCD2E3A) : Theme.of(context).colorScheme.secondary;
+        const color = Color(0xFF0047A0); // Pilgrim Blue
+
 
         return Material(
           color: Theme.of(context).cardColor,
@@ -425,8 +425,8 @@ class _ChatTile extends ConsumerWidget {
             : peer.email.split('@').first;
         final initials = name[0].toUpperCase();
 
-        final isVol = peer.accountType == 'volunteer';
-        final color = isVol ? const Color(0xFFCD2E3A) : Theme.of(context).colorScheme.secondary;
+        const color = Color(0xFF0047A0); // Pilgrim Blue
+
 
         return Dismissible(
           key: Key('${chat.id}_$isArchived'),

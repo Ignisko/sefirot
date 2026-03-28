@@ -14,7 +14,6 @@ import '../../presentation/browse/browse_screen.dart';
 import '../../presentation/chat/chat_list_screen.dart';
 import '../../presentation/admin/admin_dashboard.dart';
 import '../../presentation/home/banned_screen.dart';
-import '../../presentation/about/about_screen.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -106,44 +105,35 @@ final routerProvider = Provider<GoRouter>((ref) {
                 builder: (context, state) => DashboardScreen(
                   onNavigate: (index) {
                      switch(index){
-                       case 1: context.go('/browse'); break;
-                       case 2: context.go('/messages'); break;
-                       case 3: context.go('/profile'); break;
-                       case 4: context.go('/about'); break;
-                     }
-                  },
-                ),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/browse',
-                builder: (context, state) => BrowseScreen(
-                  openProfileUid: state.uri.queryParameters['pilgrim'],
-                ),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/messages',
-                builder: (context, state) => ChatListScreen(
-                  preselectedConversationId: state.uri.queryParameters['conversation'],
-                ),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/profile',
-                builder: (context, state) => const ProfilePane(),
-              ),
-            ],
-          ),
+                        case 1: context.go('/browse'); break;
+                        case 2: context.go('/messages'); break;
+                        case 3: context.go('/profile'); break;
+                      }
+                   },
+                 ),
+               ),
+             ],
+           ),
+           StatefulShellBranch(
+             routes: [
+               GoRoute(
+                 path: '/browse',
+                 builder: (context, state) => BrowseScreen(
+                   openProfileUid: state.uri.queryParameters['pilgrim'],
+                 ),
+               ),
+             ],
+           ),
+           StatefulShellBranch(
+             routes: [
+               GoRoute(
+                 path: '/messages',
+                 builder: (context, state) => ChatListScreen(
+                   preselectedConversationId: state.uri.queryParameters['conversation'],
+                 ),
+               ),
+             ],
+           ),
            StatefulShellBranch(
              routes: [
                GoRoute(

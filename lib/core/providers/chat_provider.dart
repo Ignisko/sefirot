@@ -13,10 +13,11 @@ final userChatsProvider = StreamProvider.autoDispose.family<List<ChatModel>, Str
     debugPrint('[CHATS] Fetched ${chats.length} chats for $uid');
     // Sort client-side by lastTimestamp descending
     chats.sort((a, b) {
-      final aTime = a.lastMessageTime ?? DateTime.fromMillisecondsSinceEpoch(0);
-      final bTime = b.lastMessageTime ?? DateTime.fromMillisecondsSinceEpoch(0);
+      final aTime = a.lastTimestamp ?? DateTime.fromMillisecondsSinceEpoch(0);
+      final bTime = b.lastTimestamp ?? DateTime.fromMillisecondsSinceEpoch(0);
       return bTime.compareTo(aTime);
     });
+
     return chats;
   });
 });

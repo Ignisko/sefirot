@@ -141,8 +141,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   Widget build(BuildContext context) {
     final name = _peerName();
     final initials = _peerInitials();
-    final isVol = widget.peer.accountType == 'volunteer';
-    final color = isVol ? const Color(0xFFCD2E3A) : Theme.of(context).colorScheme.secondary;
+    const color = Color(0xFF0047A0); // Pilgrim Blue
+
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,

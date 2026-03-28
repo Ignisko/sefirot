@@ -12,7 +12,8 @@ class UserModel {
   final String email;
   final String displayName;
   final String photoUrl;
-  final String accountType; // e.g. 'pilgrim', 'volunteer'
+  final String accountType; // Defaulting all users to 'pilgrim'
+
   final String bio;
   final List<String> interests;
   final List<String> languages;
@@ -75,22 +76,25 @@ class UserModel {
       'blockedUids': blockedUids,
       'diocese': diocese,
       'city': city,
-      'lat': lat,
-      'lng': lng,
+      'lat': lat != null ? double.parse(lat!.toStringAsFixed(3)) : null,
+      'lng': lng != null ? double.parse(lng!.toStringAsFixed(3)) : null,
       'age': age,
       'targetMinAge': targetMinAge,
       'targetMaxAge': targetMaxAge,
       'gender': gender,
     };
-    if (includeAdminFields) {
-      map['isAdmin'] = isAdmin;
-      map['isBanned'] = isBanned;
-    }
+
+
+    // We EXCLUDE isAdmin and isBanned from the map sent to Firestore 
+    // to prevent any accidental self-elevation or exposure of these fields.
+    // They are managed via a separate private collection for V2.0 security.
+    
     if (createdAt != null) {
       map['createdAt'] = Timestamp.fromDate(createdAt!);
     }
     return map;
   }
+
 
   // Create a UserModel from a Map (Firestore document snapshot)
   factory UserModel.fromMap(Map<String, dynamic> map, String documentId) {

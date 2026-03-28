@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'firebase_options.dart';
 
+import 'core/services/notification_service.dart';
 import 'core/router/app_router.dart';
 
 void main() async {
@@ -16,7 +17,10 @@ void main() async {
      await Firebase.initializeApp(
        options: DefaultFirebaseOptions.currentPlatform,
      );
+     // Initialize Push Notifications
+     await NotificationService().initialize();
   } catch (e) {
+
     debugPrint("Firebase initialization failed: $e");
     // Show a rudimentary error screen if Firebase fails entirely.
     runApp(

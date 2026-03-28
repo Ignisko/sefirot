@@ -19,6 +19,9 @@ class ChatModel {
     this.lastMessageSenderUid = '',
   });
 
+  DateTime? get lastTimestamp => lastMessageTime;
+
+
   factory ChatModel.fromMap(Map<String, dynamic> data, String documentId) {
     return ChatModel(
       id: documentId,

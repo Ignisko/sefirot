@@ -39,13 +39,15 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentStep = 0;
-  final int _totalSteps = 7;
+  final int _totalSteps = 6;
+
 
   // Step data
   final _nameController = TextEditingController();
   final _ageController = TextEditingController();
   String _selectedGender = ''; // 'Male' | 'Female' | 'Other'
-  String _selectedRole = 'pilgrim';
+  final String _selectedRole = 'pilgrim';
+
   
   // Photo
   File? _imageFile;
@@ -77,36 +79,49 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   void _nextStep() {
     // Validation
     if (_currentStep == 0) {
-      if (_nameController.text.trim().isEmpty) {
+      final name = _nameController.text.trim();
+      if (name.isEmpty) {
         _showError('Please enter your name');
         return;
       }
+      
+      // Impersonation Prevention: Reserved names check
+      final reserved = ['admin', 'support', 'system', 'official', 'pelegrin', 'volunteer', 'moderator', 'staff'];
+      final nameLower = name.toLowerCase();
+      if (reserved.any((r) => nameLower.contains(r))) {
+        _showError('This name is reserved. Please use your real name.');
+        return;
+      }
+
       final ageStr = _ageController.text.trim();
-      if (ageStr.isEmpty || int.tryParse(ageStr) == null || int.parse(ageStr) < 13) {
-        _showError('Please enter a valid age (13+)');
+      if (ageStr.isEmpty || int.tryParse(ageStr) == null || int.parse(ageStr) < 18) {
+        _showError('Please enter a valid age (18+)');
         return;
       }
     }
+
     if (_currentStep == 1 && _imageFile == null && _webImageBytes == null) {
       _showError('Please upload a photo of yourself');
       return;
     }
-    if (_currentStep == 2 && _selectedGender.isEmpty) {
-      _showError('Please select your gender');
-      return;
-    }
-    if (_currentStep == 3 && _selectedCountry.isEmpty) {
+    if (_currentStep == 2 && _selectedCountry.isEmpty) {
       _showError('Please select your nationality');
       return;
     }
-    if (_currentStep == 4 && _lat == null && _city.isEmpty) {
+    if (_currentStep == 3 && _lat == null && _city.isEmpty) {
       _showError('Please allow location access or enter your city manually');
       return;
     }
-    if (_currentStep == 5 && _bioController.text.trim().isEmpty) {
+    if (_currentStep == 4 && _bioController.text.trim().isEmpty) {
       _showError('Please write a short bio');
       return;
     }
+    if (_currentStep == 5 && _selectedGender.isEmpty) {
+      _showError('Please select your gender');
+      return;
+    }
+
+
 
     if (_currentStep < _totalSteps - 1) {
       setState(() => _currentStep++);
@@ -261,15 +276,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           });
                         },
                       ),
-                      _StepRole(
-                        selected: _selectedRole,
-                        onChanged: (v) => setState(() => _selectedRole = v),
-                      ),
                       _StepCountry(
                         controller: _countryController,
                         selected: _selectedCountry,
                         onSelected: (v) => setState(() => _selectedCountry = v),
                       ),
+
                       _StepLocation(
                         lat: _lat,
                         lng: _lng,
@@ -503,92 +515,7 @@ class _StepPhoto extends StatelessWidget {
   }
 }
 
-// ── Step 2: Role ──────────────────────────────────────────────────────────────
-class _StepRole extends StatelessWidget {
-  final String selected;
-  final ValueChanged<String> onChanged;
-  const _StepRole({required this.selected, required this.onChanged});
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('I am a...',
-              style: GoogleFonts.outfit(fontSize: 32, fontWeight: FontWeight.w800, color: Colors.black87)),
-          const SizedBox(height: 8),
-          Text('Your role helps us match you better.',
-              style: TextStyle(color: Colors.grey.shade600, fontSize: 16)),
-          const SizedBox(height: 40),
-          _RoleCard(
-            title: 'Pilgrim',
-            subtitle: 'I am attending WYD as a pilgrim',
-            selected: selected == 'pilgrim',
-            onTap: () => onChanged('pilgrim'),
-          ),
-          const SizedBox(height: 16),
-          _RoleCard(
-            title: 'Volunteer',
-            subtitle: 'I am serving as a volunteer at WYD',
-            selected: selected == 'volunteer',
-            onTap: () => onChanged('volunteer'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _RoleCard extends StatelessWidget {
-  final String title, subtitle;
-  final bool selected;
-  final VoidCallback onTap;
-  const _RoleCard({required this.title, required this.subtitle, required this.selected, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: selected ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.08) : Colors.white,
-          border: Border.all(
-            color: selected ? Theme.of(context).colorScheme.primary : Colors.grey.shade300,
-            width: selected ? 2 : 1,
-          ),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: selected ? Theme.of(context).colorScheme.primary : Colors.black87)),
-                  const SizedBox(height: 4),
-                  Text(subtitle, style: TextStyle(fontSize: 14, color: Colors.grey.shade600)),
-                ],
-              ),
-            ),
-            Container(
-              width: 24, height: 24,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: selected ? Theme.of(context).colorScheme.primary : Colors.grey.shade400, width: 2),
-                color: selected ? Theme.of(context).colorScheme.primary : Colors.transparent,
-              ),
-              child: selected ? const Icon(Icons.check, size: 16, color: Colors.white) : null,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 // ── Step 3: Country ───────────────────────────────────────────────────────────
 class _StepCountry extends StatefulWidget {

@@ -49,5 +49,9 @@
     <string>Pelegrin needs your location to show nearby pilgrims.</string>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>Pelegrin needs your location to show nearby pilgrims.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Pelegrin needs access to your gallery to upload a profile photo.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Pelegrin needs access to your camera to take a profile photo.</string>
   </dict>
-</plist>
+</plist>
